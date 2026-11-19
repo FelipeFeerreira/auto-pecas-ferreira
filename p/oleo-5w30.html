@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Óleo 5W30 sintético 1L Mobil 5W30-S1 — Auto Peças Ferreira</title>
+<meta name="description" content="Óleo 5W30 sintético 1L Mobil código 5W30-S1. Motores flex e gasolina. R$ 49,00 com entrega no mesmo dia em Salto, Itu e Pardinho.">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://felipefeerreira.github.io/auto-pecas-ferreira/p/oleo-5w30.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Óleo 5W30 sintético 1L","sku":"5W30-S1","mpn":"5W30-S1","brand":{"@type":"Brand","name":"Mobil"},"category":"Óleo e fluidos","description":"Óleo sintético API SP. Para motor 1.0 a 2.0. Embalagem de 1 litro.","offers":{"@type":"Offer","url":"https://felipefeerreira.github.io/auto-pecas-ferreira/p/oleo-5w30.html","priceCurrency":"BRL","price":"49,00","availability":"https://schema.org/InStock","seller":{"@type":"Organization","name":"Auto Peças Ferreira"}},"additionalProperty":{"@type":"PropertyValue","name":"Aplicação","value":"Motores flex e gasolina; Recomendado para uso urbano"}}</script>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="../index.html">
+      <span class="m">🔧</span>
+      <span>Auto Peças Ferreira<small>Salto · Itu · Pardinho</small></span>
+    </a>
+    <label class="searchbox">
+      <span>🔍</span>
+      <input id="q" type="search" placeholder="Busque por peça, marca ou código">
+    </label>
+    <nav class="links">
+      <a href="../produtos.html">Catálogo</a>
+      <a href="../index.html#como">Como funciona</a>
+      <a href="../index.html#contato">Contato</a>
+    </nav>
+    <div class="cartbtn" onclick="openCart()">🛒 Orçamento <span class="badge" id="badge">0</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="crumb"><a href="../index.html">Início</a> › <a href="../produtos.html">Catálogo</a> › <span id="crumbcat"></span></div>
+  <div class="pdp" id="pdp"></div>
+  <section class="blk" style="padding-top:0">
+    <div class="head"><h2>Quem viu esta peça também levou</h2></div>
+    <div class="grid" id="relacionados" style="padding-bottom:20px"></div>
+  </section>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <b>Auto Peças Ferreira</b> · Salto, Itu e Pardinho · WhatsApp (14) 98147-3778<br>
+    Garantia de 3 meses · Nota fiscal em toda peça · Confirme a aplicação pelo código antes de comprar.
+  </div>
+</footer>
+
+<script>window.FORCED_ID = "oleo-5w30";</script>
+<script src="../assets/produtos.js"></script>
+<script src="../assets/app.js"></script>
+<script>
+  const id = window.FORCED_ID || new URLSearchParams(location.search).get("id");
+  const p = byId(id) || window.PRODUTOS[0];
+  document.title = `${p.nome} — ${p.marca} ${p.ref} | Auto Peças Ferreira`;
+  document.getElementById("crumbcat").textContent = p.cat;
+
+  const esgotado = p.estoque <= 0;
+  document.getElementById("pdp").innerHTML = `
+    <div class="gal">${ICONE}</div>
+    <div>
+      <div class="brandline">${p.marca}</div>
+      <h1>${p.nome}</h1>
+      <div class="ref" style="font-size:12.5px">Código: <b>${p.ref}</b> · Categoria: ${p.cat}</div>
+
+      <div class="pricebox">
+        <div class="big">${fmt(p.preco)}</div>
+        <div class="inst">ou 3x de ${parcelas(p.preco)} sem juros no cartão · Pix com ${fmt(p.preco)} na entrega</div>
+        <div class="stock"><span class="dot"></span>${esgotado ? "Sob encomenda — consulte prazo" : `${p.estoque} em estoque · entrega hoje se confirmar até 15h`}</div>
+      </div>
+
+      <div class="buyrow">
+        <div class="qty"><button onclick="menos()">−</button><span id="qtd">1</span><button onclick="mais()">+</button></div>
+        <button class="btn primary" style="flex:1;min-width:200px" onclick="comprar()">Adicionar ao orçamento</button>
+      </div>
+      <div class="buyrow">
+        <a class="btn wpp block" href="https://wa.me/5514981473778?text=${encodeURIComponent("Olá! Quero a peça "+p.nome+" ("+p.marca+" "+p.ref+")")}" target="_blank" rel="noopener">Perguntar no WhatsApp</a>
+      </div>
+
+      <div class="specs">
+        <div><span>Marca</span><span>${p.marca}</span></div>
+        <div><span>Código do fabricante</span><span>${p.ref}</span></div>
+        <div><span>Categoria</span><span>${p.cat}</span></div>
+        <div><span>Garantia</span><span>3 meses (fabricante)</span></div>
+        <div><span>Nota fiscal</span><span>Sim, acompanha a peça</span></div>
+        <div><span>Entrega</span><span>No mesmo dia em Salto, Itu e Pardinho</span></div>
+      </div>
+
+      <div class="applist">${p.aplicacao.map(a=>`<span>${a}</span>`).join("")}</div>
+
+      <details class="acc" open><summary>Descrição</summary><p>${p.desc}</p></details>
+      <details class="acc"><summary>Aplicação — confira antes de comprar</summary><p>Compatível com: ${p.aplicacao.join("; ")}. Se o seu carro não estiver na lista, mande o modelo, o ano e o código do motor no WhatsApp que a gente confirma na distribuidora antes de você pagar.</p></details>
+      <details class="acc"><summary>Garantia e troca</summary><p>Garantia de 3 meses do fabricante contra defeito de fabricação. Não cobre instalação incorreta, contaminação de combustível ou peça aplicada em veículo incompatível. Troca em até 7 dias com a peça sem uso e com a embalagem.</p></details>
+      <details class="acc"><summary>Entrega e pagamento</summary><p>${cfg.entrega || ""}. Pagamento no Pix, dinheiro ou cartão na entrega. Retirada no balcão em Salto.</p></details>
+    </div>`;
+
+  let qtd = 1;
+  function mais(){ qtd++; document.getElementById("qtd").textContent = qtd; }
+  function menos(){ if(qtd>1){ qtd--; document.getElementById("qtd").textContent = qtd; } }
+  function comprar(){ addToCart(p.id, qtd); }
+
+  const rel = window.PRODUTOS.filter(x=>x.cat===p.cat && x.id!==p.id).slice(0,4);
+  renderList("relacionados", rel.length ? rel : window.PRODUTOS.filter(x=>x.id!==p.id).slice(0,4));
+</script>
+</body>
+</html>

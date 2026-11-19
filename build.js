@@ -1,0 +1,77 @@
+/* Gera páginas estáticas de produto (p/<id>.html), sitemap.xml e robots.txt
+   a partir de assets/produtos.js. Rodar: node build.js */
+const fs = require("fs");
+const path = require("path");
+
+const root = __dirname;
+const src = fs.readFileSync(path.join(root, "assets/produtos.js"), "utf8");
+const sandbox = { window: {} };
+const fn = new Function("window", src + "\nreturn window;");
+const W = fn(sandbox.window);
+const PRODUTOS = W.PRODUTOS;
+const LOJA = W.LOJA;
+const BASE = "https://felipefeerreira.github.io/auto-pecas-ferreira";
+
+const tpl = fs.readFileSync(path.join(root, "produto.html"), "utf8");
+fs.mkdirSync(path.join(root, "p"), { recursive: true });
+
+const rel = s => s
+  .replace(/href="assets\//g, 'href="../assets/')
+  .replace(/src="assets\//g, 'src="../assets/')
+  .replace(/href="index\.html/g, 'href="../index.html')
+  .replace(/href="produtos\.html/g, 'href="../produtos.html')
+  .replace(/href="carrinho\.html/g, 'href="../carrinho.html');
+
+const money = n => n.toFixed(2).replace(".", ",");
+
+let n = 0;
+for (const p of PRODUTOS) {
+  const jsonld = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.nome,
+    sku: p.ref,
+    mpn: p.ref,
+    brand: { "@type": "Brand", name: p.marca },
+    category: p.cat,
+    description: p.desc,
+    offers: {
+      "@type": "Offer",
+      url: `${BASE}/p/${p.id}.html`,
+      priceCurrency: "BRL",
+      price: money(p.preco),
+      availability: p.estoque > 0 ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
+      seller: { "@type": "Organization", name: LOJA.nome }
+    },
+    additionalProperty: { "@type": "PropertyValue", name: "Aplicação", value: p.aplicacao.join("; ") }
+  };
+
+  let html = rel(tpl);
+  html = html.replace("<title>Peça — Auto Peças Ferreira</title>",
+    `<title>${p.nome} ${p.marca} ${p.ref} — Auto Peças Ferreira</title>`);
+  html = html.replace('<meta name="description" content="Ficha técnica, aplicação por veículo, garantia e preço da peça. Entrega no mesmo dia em Salto, Itu e Pardinho.">',
+    `<meta name="description" content="${p.nome} ${p.marca} código ${p.ref}. ${p.aplicacao[0]}. R$ ${money(p.preco)} com entrega no mesmo dia em Salto, Itu e Pardinho.">`);
+  html = html.replace('<link rel="canonical"', '<link rel="canonical-x"'); // no-op safety
+  html = html.replace("</head>", `<link rel="canonical" href="${BASE}/p/${p.id}.html">\n<script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n</head>`);
+  html = html.replace('<script src="../assets/produtos.js"></script>',
+    `<script>window.FORCED_ID = "${p.id}";</script>\n<script src="../assets/produtos.js"></script>`);
+
+  fs.writeFileSync(path.join(root, "p", `${p.id}.html`), html);
+  n++;
+}
+
+const urls = [
+  `${BASE}/`,
+  `${BASE}/produtos.html`,
+  `${BASE}/carrinho.html`,
+  `${BASE}/oficina/`,
+  ...PRODUTOS.map(p => `${BASE}/p/${p.id}.html`)
+];
+fs.writeFileSync(path.join(root, "sitemap.xml"),
+`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(u => `  <url><loc>${u}</loc><changefreq>weekly</changefreq><priority>${u.endsWith("/") ? "1.0" : "0.8"}</priority></url>`).join("\n")}
+</urlset>
+`);
+fs.writeFileSync(path.join(root, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${BASE}/sitemap.xml\n`);
+console.log(`geradas ${n} páginas de produto + sitemap (${urls.length} URLs) + robots.txt`);

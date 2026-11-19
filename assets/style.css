@@ -168,3 +168,8 @@ footer.site a:hover{color:var(--txt)}
   .pcard .pr b{font-size:17px}
   .hero h1{font-size:24px}
 }
+
+.wafab{position:fixed;right:18px;bottom:18px;z-index:45;width:56px;height:56px;border-radius:50%;
+  background:var(--green);display:grid;place-items:center;box-shadow:0 10px 26px rgba(0,0,0,.4);transition:.15s}
+.wafab:hover{transform:scale(1.06)}
+@media(max-width:520px){.wafab{width:52px;height:52px;right:14px;bottom:14px}}

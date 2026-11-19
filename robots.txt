@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://felipefeerreira.github.io/auto-pecas-ferreira/sitemap.xml

@@ -76,7 +76,7 @@
           <div style="width:62px;height:62px;border-radius:10px;background:var(--panel2);display:grid;place-items:center;flex:none">
             <span style="transform:scale(.6);display:block">${ICONE}</span></div>
           <div style="flex:1;min-width:0">
-            <a class="nm" href="produto.html?id=${p.id}">${p.nome}</a>
+            <a class="nm" href="p/${p.id}.html">${p.nome}</a>
             <div class="rf">${p.marca} · ${p.ref}</div>
             <div class="qty" style="margin-top:8px">
               <button onclick="changeQty('${p.id}',-1);desenhar()">−</button><span>${c.q}</span><button onclick="changeQty('${p.id}',1);desenhar()">+</button>

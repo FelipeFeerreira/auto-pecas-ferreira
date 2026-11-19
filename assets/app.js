@@ -9,6 +9,8 @@ const WPP = window.WHATSAPP || "";
 const fmt = n => n.toLocaleString("pt-BR", {style:"currency", currency:"BRL"});
 const byId = id => P.find(p => p.id === id);
 const parcelas = n => fmt(n / 3);
+/* páginas de produto vivem em /p/, então o link muda de base */
+const prodUrl = id => (location.pathname.indexOf("/p/") >= 0 ? "" : "p/") + id + ".html";
 
 const ICONE = `<svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
 <path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg>`;
@@ -116,14 +118,14 @@ function cardHTML(p){
   const tagClass = (p.tag === "Oferta" || p.tag === "Mais vendido") ? "hot" : "";
   return `<article class="pcard">
     ${p.tag ? `<span class="tag ${tagClass}">${p.tag}</span>` : ""}
-    <a class="thumb" href="produto.html?id=${p.id}">${ICONE}</a>
+    <a class="thumb" href="${prodUrl(p.id)}">${ICONE}</a>
     <div class="info">
       <div class="brandline">${p.marca}</div>
-      <a class="nm" href="produto.html?id=${p.id}">${p.nome}</a>
+      <a class="nm" href="${prodUrl(p.id)}">${p.nome}</a>
       <div class="ref">${p.ref} · ${p.cat}</div>
       <div class="pr"><b>${fmt(p.preco)}</b><small>ou 3x ${parcelas(p.preco)}</small></div>
       <div class="actions">
-        <a class="btn ghost" href="produto.html?id=${p.id}">Ver</a>
+        <a class="btn ghost" href="${prodUrl(p.id)}">Ver</a>
         <button class="btn primary" onclick="addToCart('${p.id}')">Adicionar</button>
       </div>
     </div>
@@ -155,10 +157,24 @@ function wireSearch(){
   };
 }
 
+function whatsappFab(){
+  if (document.getElementById("wafab")) return;
+  const a = document.createElement("a");
+  a.id = "wafab";
+  a.className = "wafab";
+  a.target = "_blank";
+  a.rel = "noopener";
+  a.title = "Falar no WhatsApp";
+  a.href = `https://wa.me/${WPP}?text=${encodeURIComponent("Olá! Preciso de uma peça na Auto Peças Ferreira")}`;
+  a.innerHTML = '<svg width="27" height="27" viewBox="0 0 24 24" fill="#06240f"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.6-.7c.1-.2.1-.3 0-.5l-.7-1.6c-.2-.4-.4-.3-.5-.3h-.5c-.2 0-.5.1-.7.4-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.8 2.2.8 2.6.7 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>';
+  document.body.appendChild(a);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   drawerHTML();
   paintCart();
   wireSearch();
+  whatsappFab();
   const badge = document.getElementById("badge");
   if (badge) badge.onclick = openCart;
 });
