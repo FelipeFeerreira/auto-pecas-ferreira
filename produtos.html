@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catálogo de peças — Auto Peças Ferreira</title>
+<meta name="description" content="Catálogo de autopeças com preço e aplicação por veículo. Entrega no mesmo dia em Salto, Itu e Pardinho.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="index.html">
+      <span class="m">🔧</span>
+      <span>Auto Peças Ferreira<small>Salto · Itu · Pardinho</small></span>
+    </a>
+    <label class="searchbox">
+      <span>🔍</span>
+      <input id="q" type="search" placeholder="Busque por peça, marca ou código">
+    </label>
+    <nav class="links">
+      <a href="produtos.html">Catálogo</a>
+      <a href="index.html#como">Como funciona</a>
+      <a href="index.html#contato">Contato</a>
+    </nav>
+    <div class="cartbtn" onclick="openCart()">🛒 Orçamento <span class="badge" id="badge">0</span></div>
+  </div>
+</header>
+
+<div class="wrap" style="padding-top:24px">
+  <h1 style="margin:0 0 4px;font-size:26px;letter-spacing:-.4px">Catálogo</h1>
+  <p style="margin:0;color:var(--muted);font-size:13.5px" id="resumo"></p>
+  <div class="filters">
+    <div id="chips" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    <select id="marca"><option value="">Todas as marcas</option></select>
+    <select id="ordem">
+      <option value="relevancia">Mais relevantes</option>
+      <option value="menor">Menor preço</option>
+      <option value="maior">Maior preço</option>
+      <option value="nome">Nome A–Z</option>
+    </select>
+  </div>
+  <div class="grid" id="lista" style="padding-bottom:46px"></div>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <b>Auto Peças Ferreira</b> · Salto, Itu e Pardinho · WhatsApp (14) 98147-3778<br>
+    Garantia de 3 meses · Nota fiscal em toda peça · Preços sujeitos a alteração sem aviso.
+  </div>
+</footer>
+
+<script src="assets/produtos.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  let catAtual = params.get("cat") || "Todas";
+  let busca = (params.get("busca") || "").toLowerCase();
+  document.getElementById("q").value = params.get("busca") || "";
+
+  const cats = ["Todas", ...new Set(window.PRODUTOS.map(p=>p.cat))];
+  const marcas = [...new Set(window.PRODUTOS.map(p=>p.marca))].sort();
+  document.getElementById("marca").innerHTML = `<option value="">Todas as marcas</option>` + marcas.map(m=>`<option>${m}</option>`).join("");
+
+  function chips(){
+    document.getElementById("chips").innerHTML = cats.map(c=>`<button class="chip ${c===catAtual?'on':''}" data-c="${c}">${c}</button>`).join("");
+    document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{ catAtual=b.dataset.c; render(); });
+  }
+
+  function render(){
+    const marca = document.getElementById("marca").value;
+    const ordem = document.getElementById("ordem").value;
+    let lista = window.PRODUTOS.filter(p=>{
+      const okCat = catAtual==="Todas" || p.cat===catAtual;
+      const okMarca = !marca || p.marca===marca;
+      const alvo = (p.nome+" "+p.marca+" "+p.ref+" "+p.cat+" "+p.aplicacao.join(" ")).toLowerCase();
+      const okBusca = !busca || alvo.includes(busca);
+      return okCat && okMarca && okBusca;
+    });
+    if (ordem==="menor") lista.sort((a,b)=>a.preco-b.preco);
+    if (ordem==="maior") lista.sort((a,b)=>b.preco-a.preco);
+    if (ordem==="nome") lista.sort((a,b)=>a.nome.localeCompare(b.nome,"pt-BR"));
+
+    document.getElementById("resumo").textContent = `${lista.length} peça${lista.length===1?"":"s"}${catAtual!=="Todas"?" em "+catAtual:""}${busca?` para "${busca}"`:""} · entrega hoje em Salto, Itu e Pardinho`;
+    chips();
+    renderList("lista", lista);
+  }
+
+  ["marca","ordem"].forEach(id=>document.getElementById(id).onchange=render);
+  document.getElementById("q").addEventListener("input", e=>{ busca = e.target.value.trim().toLowerCase(); render(); });
+  render();
+</script>
+</body>
+</html>

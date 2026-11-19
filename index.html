@@ -3,257 +3,119 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Auto Peças STOP — peças com entrega no dia em Salto, Itu e região</title>
-<meta name="description" content="Catálogo de autopeças com preço de distribuidora e entrega no mesmo dia em Salto, Itu, Pardinho e região. Peça pelo WhatsApp.">
-<style>
-  :root{
-    --bg:#0d0f12; --panel:#15181d; --panel2:#1c2027; --line:#2a2f38;
-    --txt:#e8ecf1; --muted:#98a2b3; --red:#e23b2e; --red-dark:#b62c22;
-    --green:#25d366; --amber:#f5a623;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt)}
-  a{color:inherit;text-decoration:none}
-  header{position:sticky;top:0;z-index:20;background:rgba(13,15,18,.96);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
-  .topbar{display:flex;align-items:center;gap:14px;height:64px}
-  .logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.5px}
-  .logo .mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--red),#7a1d16);display:grid;place-items:center;font-size:18px}
-  .logo small{display:block;font-weight:500;font-size:11px;color:var(--muted);letter-spacing:0}
-  .search{flex:1;display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-width:0}
-  .search input{flex:1;background:none;border:0;outline:none;color:var(--txt);font-size:14px;min-width:0}
-  .cartbtn{position:relative;display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer;font-size:14px;color:var(--txt)}
-  .badge{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;font-size:11px;font-weight:700;border-radius:999px;min-width:19px;height:19px;display:grid;place-items:center;padding:0 4px}
-  .hero{padding:34px 0 22px;border-bottom:1px solid var(--line);background:
-     radial-gradient(900px 300px at 15% -20%, rgba(226,59,46,.20), transparent 60%),
-     radial-gradient(700px 260px at 85% 0%, rgba(37,211,102,.10), transparent 60%)}
-  .hero h1{margin:0 0 10px;font-size:clamp(24px,4vw,38px);line-height:1.15}
-  .hero h1 span{color:var(--red)}
-  .hero p{margin:0;color:var(--muted);max-width:640px;font-size:15px;line-height:1.55}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
-  .chip{font-size:12.5px;border:1px solid var(--line);background:var(--panel);padding:7px 11px;border-radius:999px;color:var(--muted)}
-  .chip b{color:var(--txt)}
-  nav.cats{display:flex;gap:8px;overflow-x:auto;padding:16px 0;scrollbar-width:none}
-  nav.cats::-webkit-scrollbar{display:none}
-  .cat{white-space:nowrap;border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:9px 14px;border-radius:999px;font-size:13.5px;cursor:pointer}
-  .cat.on{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:40px}
-  @media(max-width:980px){.grid{grid-template-columns:repeat(3,1fr)}}
-  @media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}.search{display:none}}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
-  .thumb{aspect-ratio:4/3;background:linear-gradient(160deg,#1b2029,#12151a);display:grid;place-items:center;border-bottom:1px solid var(--line);position:relative}
-  .thumb svg{width:64%;height:64%;opacity:.85}
-  .tag{position:absolute;top:9px;left:9px;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:4px 7px;border-radius:6px;background:rgba(37,211,102,.16);color:#7bf0a4;border:1px solid rgba(37,211,102,.35)}
-  .tag.marca{background:rgba(226,59,46,.15);color:#ff8d81;border-color:rgba(226,59,46,.35)}
-  .body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
-  .name{font-size:13.5px;line-height:1.35;font-weight:600;min-height:36px}
-  .ref{font-size:11px;color:var(--muted);font-family:ui-monospace,monospace}
-  .price{margin-top:auto;padding-top:8px;display:flex;align-items:baseline;gap:7px}
-  .price b{font-size:19px}
-  .price s{color:var(--muted);font-size:12px}
-  .add{margin-top:9px;width:100%;border:0;border-radius:9px;padding:10px;font-weight:700;font-size:13.5px;cursor:pointer;background:var(--red);color:#fff}
-  .add:hover{background:var(--red-dark)}
-  .empty{padding:60px 0;text-align:center;color:var(--muted)}
-  .note{border:1px solid rgba(245,166,35,.35);background:rgba(245,166,35,.08);color:#ffd08a;border-radius:12px;padding:12px 14px;font-size:13px;margin:0 0 18px;line-height:1.5}
-  .info{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:26px 0}
-  @media(max-width:760px){.info{grid-template-columns:1fr}}
-  .info div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
-  .info h3{margin:0 0 6px;font-size:14px}
-  .info p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
-  footer{border-top:1px solid var(--line);padding:22px 0 90px;color:var(--muted);font-size:12.5px;line-height:1.7}
-  /* carrinho */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:.2s;z-index:40}
-  .overlay.on{opacity:1;pointer-events:auto}
-  aside{position:fixed;top:0;right:0;height:100%;width:min(420px,100%);background:var(--panel);border-left:1px solid var(--line);transform:translateX(100%);transition:.25s;z-index:50;display:flex;flex-direction:column}
-  aside.on{transform:none}
-  aside header{position:static;background:var(--panel);border-bottom:1px solid var(--line);padding:16px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:none}
-  aside h2{margin:0;font-size:16px}
-  .close{background:none;border:0;color:var(--muted);font-size:22px;cursor:pointer;line-height:1}
-  .items{flex:1;overflow:auto;padding:14px 16px}
-  .item{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
-  .item .qtd{display:flex;align-items:center;gap:8px;margin-top:6px}
-  .item button{background:var(--panel2);border:1px solid var(--line);color:var(--txt);width:26px;height:26px;border-radius:7px;cursor:pointer;font-size:15px;line-height:1}
-  .item .nm{font-size:13px;line-height:1.35}
-  .item .pr{font-size:13px;color:var(--muted);margin-top:4px}
-  .foot{padding:16px;border-top:1px solid var(--line)}
-  .tot{display:flex;justify-content:space-between;font-size:15px;margin-bottom:12px}
-  .tot b{font-size:20px}
-  .wpp{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;border:0;border-radius:11px;padding:14px;background:var(--green);color:#06240f;font-weight:800;font-size:15px;cursor:pointer}
-  .wpp:disabled{opacity:.4;cursor:not-allowed}
-  .pay{color:var(--muted);font-size:11.5px;text-align:center;margin:10px 0 0;line-height:1.5}
-</style>
+<title>Auto Peças Ferreira — peças com entrega no dia em Salto, Itu e região</title>
+<meta name="description" content="Autopeças Bosch, Nakata, Monroe e mais com preço de distribuidora e entrega no mesmo dia em Salto, Itu, Pardinho e região. Orçamento pelo WhatsApp.">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<header>
-  <div class="wrap topbar">
-    <a class="logo" href="#">
-      <span class="mark">🔧</span>
-      <span>Auto Peças STOP<small>Salto · Itu · Pardinho</small></span>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="index.html">
+      <span class="m">🔧</span>
+      <span>Auto Peças Ferreira<small>Salto · Itu · Pardinho</small></span>
     </a>
-    <label class="search">
+    <label class="searchbox">
       <span>🔍</span>
-      <input id="q" type="search" placeholder="Busque a peça, marca ou código (ex: bomba, F000TE159A)">
+      <input id="q" type="search" placeholder="Busque por peça, marca ou código (ex: bomba, F000TE159A)">
     </label>
-    <button class="cartbtn" onclick="abrirCarrinho()">🛒 Carrinho <span class="badge" id="badge">0</span></button>
+    <nav class="links">
+      <a href="produtos.html">Catálogo</a>
+      <a href="#como">Como funciona</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <div class="cartbtn" onclick="openCart()">🛒 Orçamento <span class="badge" id="badge">0</span></div>
   </div>
 </header>
 
 <section class="hero">
   <div class="wrap">
-    <h1>Peça certa, <span>entregue hoje</span>, mais barata que na loja da cidade.</h1>
-    <p>Compramos direto na distribuidora. Você escolhe no catálogo, confirma no WhatsApp e recebe no mesmo dia em Salto, Itu e região — ou retira no balcão.</p>
-    <div class="chips">
-      <span class="chip"><b>Entrega no dia</b> em Salto e Itu</span>
-      <span class="chip">Peças <b>Bosch</b>, Nakata, Monroe e mais</span>
-      <span class="chip">Pix na entrega</span>
-      <span class="chip">Garantia do fabricante</span>
+    <span class="tagline">⚡ Entrega no mesmo dia · Salto, Itu e Pardinho</span>
+    <h1>Peça certa, <em>entregue hoje</em>, mais barata que na loja da cidade.</h1>
+    <p class="sub">Compramos direto na distribuidora e repassamos sem a margem da loja de balcão. Você escolhe no catálogo, confirma no WhatsApp e recebe na sua oficina ou em casa.</p>
+    <div class="cta">
+      <a class="btn primary" href="produtos.html">Ver catálogo</a>
+      <a class="btn ghost" href="https://wa.me/5514981473778?text=Ol%C3%A1!%20Preciso%20de%20uma%20pe%C3%A7a" target="_blank" rel="noopener">Falar no WhatsApp</a>
+    </div>
+    <div class="trust">
+      <div><b>Entrega no dia</b>Pedido até 15h sai hoje</div>
+      <div><b>Garantia 3 meses</b>Nota fiscal em toda peça</div>
+      <div><b>Pix ou cartão</b>Paga na entrega</div>
+      <div><b>Peça original</b>Bosch, Nakata, Monroe, Gates</div>
     </div>
   </div>
 </section>
 
-<div class="wrap">
-  <nav class="cats" id="cats"></nav>
-  <div class="note" id="aviso">
-    <b>PRÉVIA, não publicar ainda:</b> os preços abaixo são de exemplo, montados a partir da bomba Bosch de R$ 200 (custo) vendida a R$ 370. Troque pela tabela real da distribuidora antes de publicar.
-  </div>
-  <div class="grid" id="grid"></div>
-
-  <div class="info">
-    <div><h3>⚡ Entrega no mesmo dia</h3><p>Pedido confirmado até 15h sai no mesmo dia em Salto, Itu e Pardinho. Depois das 15h, sai na primeira hora do dia seguinte.</p></div>
-    <div><h3>💳 Pix, dinheiro ou cartão</h3><p>Pagamento na entrega. Para oficina com histórico, condição a combinar direto no WhatsApp.</p></div>
-    <div><h3>🛡️ Garantia</h3><p>Garantia do fabricante em todas as peças. Guardamos a nota fiscal e enviamos junto com a peça.</p></div>
-  </div>
-</div>
-
-<footer>
+<section class="blk">
   <div class="wrap">
-    <b>Auto Peças STOP</b> · Salto/SP e região · WhatsApp (14) 98147-3778<br>
-    Peças originais e de reposição com nota fiscal. Preços sujeitos a alteração sem aviso. Imagens ilustrativas.
+    <div class="head"><h2>Categorias</h2><a href="produtos.html">ver tudo →</a></div>
+    <div class="cats" id="cats"></div>
   </div>
+</section>
+
+<section class="blk" style="padding-top:0">
+  <div class="wrap">
+    <div class="head"><h2>Destaques da semana</h2><a href="produtos.html">catálogo completo →</a></div>
+    <div class="grid" id="destaques"></div>
+  </div>
+</section>
+
+<section class="blk" style="padding-top:8px">
+  <div class="wrap">
+    <div class="ml">
+      <div>
+        <h3>Veio do Mercado Livre? Aqui sai mais barato.</h3>
+        <p>Lá a comissão come metade da margem — por isso o mesmo produto custa mais. Comprando direto com a gente você fala com quem tem a peça na mão, recebe hoje e paga no Pix sem taxa de plataforma.</p>
+      </div>
+      <a class="btn wpp" href="https://wa.me/5514981473778?text=Vi%20seu%20an%C3%BAncio%20no%20Mercado%20Livre%20e%20quero%20comprar%20direto" target="_blank" rel="noopener">Quero preço direto</a>
+    </div>
+  </div>
+</section>
+
+<section class="blk" id="como">
+  <div class="wrap">
+    <div class="head"><h2>Como funciona</h2></div>
+    <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="card" style="padding:20px"><div class="brandline">Passo 1</div><h3 style="margin:8px 0 6px;font-size:16px">Escolha a peça</h3><p style="margin:0;color:var(--muted);font-size:13.5px">Busque pelo nome ou pelo código. Na página da peça tem a lista de carros compatíveis.</p></div>
+      <div class="card" style="padding:20px"><div class="brandline">Passo 2</div><h3 style="margin:8px 0 6px;font-size:16px">Confirme no WhatsApp</h3><p style="margin:0;color:var(--muted);font-size:13.5px">O orçamento já vai montado. A gente confirma estoque, valor do frete e a forma de pagamento.</p></div>
+      <div class="card" style="padding:20px"><div class="brandline">Passo 3</div><h3 style="margin:8px 0 6px;font-size:16px">Receba hoje</h3><p style="margin:0;color:var(--muted);font-size:13.5px">Entrega em Salto, Itu e Pardinho. Também pode retirar no balcão.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site" id="contato">
+  <div class="wrap cols">
+    <div>
+      <b>Auto Peças Ferreira</b><br>
+      Autopeças com entrega no dia em Salto, Itu, Pardinho e região.<br><br>
+      <b>WhatsApp:</b> <a href="https://wa.me/5514981473778" target="_blank" rel="noopener">(14) 98147-3778</a><br>
+      <b>Atendimento:</b> seg a sáb, 8h às 18h
+    </div>
+    <div>
+      <b>Loja</b><br>
+      <a href="produtos.html">Catálogo completo</a><br>
+      <a href="carrinho.html">Meu orçamento</a><br>
+      <a href="#como">Como funciona</a>
+    </div>
+    <div>
+      <b>Informações</b><br>
+      Garantia de 3 meses<br>
+      Nota fiscal em toda peça<br>
+      Troca em até 7 dias<br>
+      Peças originais e de reposição
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:22px;font-size:11.5px">Preços sujeitos a alteração sem aviso. Imagens ilustrativas. Confirme a aplicação pelo código da peça antes de comprar.</div>
 </footer>
 
-<div class="overlay" id="overlay" onclick="fecharCarrinho()"></div>
-<aside id="cart">
-  <header>
-    <h2>Seu pedido</h2>
-    <button class="close" onclick="fecharCarrinho()">×</button>
-  </header>
-  <div class="items" id="items"></div>
-  <div class="foot">
-    <div class="tot"><span>Total</span><b id="total">R$ 0,00</b></div>
-    <button class="wpp" id="enviar" onclick="enviar()">Enviar pedido no WhatsApp</button>
-    <p class="pay">Abre o WhatsApp com a lista pronta. Confirma-se disponibilidade e valor do frete antes do pagamento.</p>
-  </div>
-</aside>
-
+<script src="assets/produtos.js"></script>
+<script src="assets/app.js"></script>
 <script>
-/* ============================================================
-   DADOS DAS PEÇAS — é aqui que você troca tudo.
-   Cada item: nome, ref (código), cat (categoria), custo, preco,
-   e "tag" opcional (LANÇAMENTO, OFERTA...).
-   O preço de venda é o que aparece no site.
-   ============================================================ */
-const WHATSAPP = "5514981473778";
-const PRODUTOS = [
-  {nome:"Bomba de combustível Bosch flex", ref:"F000TE159A", cat:"Combustível", custo:200, preco:370, tag:"OFERTA"},
-  {nome:"Bomba de combustível Bosch 3 bar 12V", ref:"F000TE181A", cat:"Combustível", custo:295, preco:529, tag:""},
-  {nome:"Refil de bomba Bosch gasolina", ref:"F000TE159A-R", cat:"Combustível", custo:98, preco:189, tag:""},
-  {nome:"Filtro de óleo Bosch", ref:"F026407084", cat:"Filtros", custo:18, preco:39, tag:""},
-  {nome:"Filtro de ar Bosch", ref:"F026400208", cat:"Filtros", custo:32, preco:69, tag:""},
-  {nome:"Filtro de combustível Bosch", ref:"F026402047", cat:"Filtros", custo:26, preco:59, tag:""},
-  {nome:"Pastilha de freio dianteira Bosch", ref:"0986494745", cat:"Freios", custo:88, preco:179, tag:"MAIS VENDIDO"},
-  {nome:"Disco de freio ventilado", ref:"BD-1204", cat:"Freios", custo:132, preco:259, tag:""},
-  {nome:"Lona de freio traseira (jogo)", ref:"LN-3320", cat:"Freios", custo:74, preco:149, tag:""},
-  {nome:"Correia dentada + tensor", ref:"CT-1088-K", cat:"Motor", custo:145, preco:289, tag:""},
-  {nome:"Bomba d'água", ref:"BA-2210", cat:"Motor", custo:158, preco:315, tag:""},
-  {nome:"Vela de ignição iridium (jogo 4)", ref:"FR7DC+", cat:"Motor", custo:96, preco:195, tag:""},
-  {nome:"Amortecedor dianteiro Monroe", ref:"M-7412", cat:"Suspensão", custo:210, preco:399, tag:""},
-  {nome:"Pivô de suspensão", ref:"PV-1140", cat:"Suspensão", custo:42, preco:89, tag:""},
-  {nome:"Terminal de direção", ref:"TD-2218", cat:"Suspensão", custo:38, preco:82, tag:""},
-  {nome:"Bateria 60Ah", ref:"B60-18M", cat:"Elétrica", custo:315, preco:489, tag:"ENTREGA HOJE"},
-  {nome:"Sensor de rotação", ref:"SR-1042", cat:"Elétrica", custo:68, preco:139, tag:""},
-  {nome:"Bobina de ignição", ref:"BI-3310", cat:"Elétrica", custo:112, preco:219, tag:""},
-  {nome:"Óleo 5W30 sintético 1L", ref:"5W30-S1", cat:"Óleo e fluidos", custo:28, preco:49, tag:""},
-  {nome:"Fluido de freio DOT4 500ml", ref:"DOT4-500", cat:"Óleo e fluidos", custo:16, preco:33, tag:""}
-];
-/* ============================================================ */
-
-const fmt = n => n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-const icone = `<svg viewBox="0 0 24 24" fill="none" stroke="#5c6b82" stroke-width="1.3"><path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5c6b82"/></svg>`;
-let catAtual = "Todas";
-let carrinho = JSON.parse(localStorage.getItem("stop_cart") || "[]");
-
-const cats = ["Todas", ...new Set(PRODUTOS.map(p=>p.cat))];
-document.getElementById("cats").innerHTML = cats.map(c=>`<button class="cat${c===catAtual?' on':''}" data-c="${c}">${c}</button>`).join("");
-document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>{catAtual=b.dataset.c;document.querySelectorAll(".cat").forEach(x=>x.classList.toggle("on",x.dataset.c===catAtual));render();});
-
-function render(){
-  const q = document.getElementById("q").value.trim().toLowerCase();
-  const lista = PRODUTOS.filter(p=>{
-    const okCat = catAtual==="Todas" || p.cat===catAtual;
-    const okQ = !q || (p.nome+" "+p.ref+" "+p.cat).toLowerCase().includes(q);
-    return okCat && okQ;
-  });
-  const g = document.getElementById("grid");
-  if(!lista.length){ g.innerHTML = `<div class="empty" style="grid-column:1/-1">Nenhuma peça encontrada. Mande o modelo do carro no WhatsApp que a gente busca.</div>`; return; }
-  g.innerHTML = lista.map((p,i)=>`
-    <div class="card">
-      <div class="thumb">${icone}${p.tag?`<span class="tag ${p.tag==='OFERTA'?'marca':''}">${p.tag}</span>`:''}</div>
-      <div class="body">
-        <div class="name">${p.nome}</div>
-        <div class="ref">${p.ref} · ${p.cat}</div>
-        <div class="price"><b>${fmt(p.preco)}</b><span style="color:var(--muted);font-size:11.5px">ou 3x de ${fmt(p.preco/3)}</span></div>
-        <button class="add" data-i="${PRODUTOS.indexOf(p)}">Adicionar ao pedido</button>
-      </div>
-    </div>`).join("");
-  g.querySelectorAll(".add").forEach(b=>b.onclick=()=>add(+b.dataset.i));
-}
-
-function salvar(){ localStorage.setItem("stop_cart", JSON.stringify(carrinho)); desenharCarrinho(); }
-function add(i){
-  const it = carrinho.find(c=>c.i===i);
-  if(it) it.q++; else carrinho.push({i, q:1});
-  salvar(); abrirCarrinho();
-}
-function mudar(i,d){
-  const it = carrinho.find(c=>c.i===i); if(!it) return;
-  it.q += d;
-  if(it.q<=0) carrinho = carrinho.filter(c=>c.i!==i);
-  salvar();
-}
-function desenharCarrinho(){
-  const n = carrinho.reduce((s,c)=>s+c.q,0);
-  document.getElementById("badge").textContent = n;
-  const total = carrinho.reduce((s,c)=>s + PRODUTOS[c.i].preco*c.q, 0);
-  document.getElementById("total").textContent = fmt(total);
-  document.getElementById("enviar").disabled = !carrinho.length;
-  document.getElementById("items").innerHTML = carrinho.length ? carrinho.map(c=>{
-    const p = PRODUTOS[c.i];
-    return `<div class="item">
-      <div style="flex:1">
-        <div class="nm">${p.nome}</div>
-        <div class="pr">${p.ref} · ${fmt(p.preco)}</div>
-        <div class="qtd">
-          <button onclick="mudar(${c.i},-1)">−</button>
-          <span>${c.q}</span>
-          <button onclick="mudar(${c.i},1)">+</button>
-        </div>
-      </div>
-      <div style="font-weight:700;font-size:14px">${fmt(p.preco*c.q)}</div>
-    </div>`;
-  }).join("") : `<p style="color:#98a2b3;font-size:13.5px">Carrinho vazio. Escolha as peças no catálogo.</p>`;
-}
-function abrirCarrinho(){ document.getElementById("cart").classList.add("on"); document.getElementById("overlay").classList.add("on"); }
-function fecharCarrinho(){ document.getElementById("cart").classList.remove("on"); document.getElementById("overlay").classList.remove("on"); }
-function enviar(){
-  if(!carrinho.length) return;
-  const linhas = carrinho.map(c=>`• ${c.q}x ${PRODUTOS[c.i].nome} (${PRODUTOS[c.i].ref}) — ${fmt(PRODUTOS[c.i].preco*c.q)}`).join("\n");
-  const total = carrinho.reduce((s,c)=>s + PRODUTOS[c.i].preco*c.q, 0);
-  const msg = `Olá! Quero este pedido:\n\n${linhas}\n\nTotal: ${fmt(total)}\n\nEntrego em: (bairro/cidade)\nCarro: (modelo/ano)`;
-  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
-}
-document.getElementById("q").addEventListener("input", render);
-render(); desenharCarrinho();
+  const cEl = document.getElementById("cats");
+  const ICONES = {"Combustível":"⛽","Filtros":"🧽","Freios":"🛑","Motor":"⚙️","Suspensão":"🔩","Elétrica":"🔌","Óleo e fluidos":"🛢️"};
+  const cats = [...new Set(window.PRODUTOS.map(p=>p.cat))];
+  cEl.innerHTML = cats.map(c=>`<a class="catcard" href="produtos.html?cat=${encodeURIComponent(c)}"><span>${ICONES[c]||"🔧"}</span>${c}</a>`).join("");
+  renderList("destaques", window.PRODUTOS.filter(p=>p.destaque).slice(0,8));
 </script>
 </body>
 </html>

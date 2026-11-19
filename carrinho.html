@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meu orçamento — Auto Peças Ferreira</title>
+<meta name="description" content="Revise as peças do seu orçamento e envie para a Auto Peças Ferreira pelo WhatsApp.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="index.html">
+      <span class="m">🔧</span>
+      <span>Auto Peças Ferreira<small>Salto · Itu · Pardinho</small></span>
+    </a>
+    <label class="searchbox">
+      <span>🔍</span>
+      <input id="q" type="search" placeholder="Busque por peça, marca ou código">
+    </label>
+    <nav class="links">
+      <a href="produtos.html">Catálogo</a>
+      <a href="index.html#como">Como funciona</a>
+      <a href="index.html#contato">Contato</a>
+    </nav>
+    <div class="cartbtn" onclick="openCart()">🛒 Orçamento <span class="badge" id="badge">0</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="cartwrap">
+    <div>
+      <h1 style="margin:0 0 14px;font-size:24px;letter-spacing:-.3px">Meu orçamento</h1>
+      <div class="card" id="itens"></div>
+      <a href="produtos.html" style="display:inline-block;margin-top:14px;font-size:13px;color:var(--muted)">← continuar escolhendo peças</a>
+    </div>
+
+    <div class="card summary">
+      <h3>Resumo</h3>
+      <div class="row"><span>Peças</span><span id="qtditens">0</span></div>
+      <div class="row"><span>Entrega em Salto / Itu</span><span>R$ 10,00</span></div>
+      <div class="row"><span>Retirada no balcão</span><span>Grátis</span></div>
+      <div class="row tot"><span>Total em peças</span><span id="total">R$ 0,00</span></div>
+
+      <div style="margin-top:16px">
+        <div class="field"><label>Seu nome</label><input id="nome" placeholder="Nome ou nome da oficina"></div>
+        <div class="field"><label>Carro / ano</label><input id="carro" placeholder="Ex: Gol G6 1.0 2012"></div>
+        <div class="field"><label>Cidade / bairro</label><input id="cidade" placeholder="Ex: Salto — Centro"></div>
+      </div>
+
+      <a class="btn wpp block" id="enviar" href="#" target="_blank" rel="noopener" style="margin-top:6px">Enviar pedido no WhatsApp</a>
+      <p style="color:var(--muted);font-size:11.5px;margin:10px 0 0;line-height:1.5">Abre o WhatsApp com a lista pronta. A gente confirma estoque, frete e forma de pagamento antes de fechar.</p>
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <b>Auto Peças Ferreira</b> · Salto, Itu e Pardinho · WhatsApp (14) 98147-3778<br>
+    Garantia de 3 meses · Nota fiscal em toda peça · Preços sujeitos a alteração sem aviso.
+  </div>
+</footer>
+
+<script src="assets/produtos.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  function desenhar(){
+    const box = document.getElementById("itens");
+    if (!cart.length){
+      box.innerHTML = `<div class="empty">Seu orçamento está vazio.<br><a href="produtos.html" class="btn primary" style="margin-top:16px">Ver catálogo</a></div>`;
+    } else {
+      box.innerHTML = cart.map(c=>{
+        const p = byId(c.id); if(!p) return "";
+        return `<div class="line">
+          <div style="width:62px;height:62px;border-radius:10px;background:var(--panel2);display:grid;place-items:center;flex:none">
+            <span style="transform:scale(.6);display:block">${ICONE}</span></div>
+          <div style="flex:1;min-width:0">
+            <a class="nm" href="produto.html?id=${p.id}">${p.nome}</a>
+            <div class="rf">${p.marca} · ${p.ref}</div>
+            <div class="qty" style="margin-top:8px">
+              <button onclick="changeQty('${p.id}',-1);desenhar()">−</button><span>${c.q}</span><button onclick="changeQty('${p.id}',1);desenhar()">+</button>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:800;font-size:14.5px">${fmt(p.preco*c.q)}</div>
+            <div style="color:var(--muted);font-size:11.5px;margin-top:2px">${c.q} × ${fmt(p.preco)}</div>
+          </div>
+        </div>`;
+      }).join("");
+    }
+    document.getElementById("qtditens").textContent = cartCount();
+    document.getElementById("total").textContent = fmt(cartTotal());
+    atualizarLink();
+  }
+
+  function atualizarLink(){
+    const nome = document.getElementById("nome").value.trim();
+    const carro = document.getElementById("carro").value.trim();
+    const cidade = document.getElementById("cidade").value.trim();
+    const extra = [nome && `Nome: ${nome}`, carro && `Carro: ${carro}`, cidade && `Entrega em: ${cidade}`].filter(Boolean).join("\n");
+    const a = document.getElementById("enviar");
+    a.href = cart.length ? whatsappLink(extra) : "#";
+    a.style.opacity = cart.length ? 1 : .45;
+  }
+
+  ["nome","carro","cidade"].forEach(id=>document.getElementById(id).addEventListener("input", atualizarLink));
+  document.getElementById("enviar").addEventListener("click", e=>{ if(!cart.length) e.preventDefault(); });
+  desenhar();
+</script>
+</body>
+</html>
