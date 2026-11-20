@@ -97,7 +97,7 @@ function paintCart(){
           <div class="nm">${p.nome}</div>
           <div class="rf">${p.marca} · ${p.ref}</div>
           <div class="qty" style="margin-top:7px">
-            <button onclick="changeQty('${p.id}',-1)">−</button><span>${c.q}</span><button onclick="changeQty('${p.id}',1)">+</button>
+            <button type="button" onclick="changeQty('${p.id}',-1)" aria-label="Diminuir quantidade de ${p.nome}">−</button><span aria-live="polite">${c.q}</span><button type="button" onclick="changeQty('${p.id}',1)" aria-label="Aumentar quantidade de ${p.nome}">+</button>
           </div>
         </div>
         <div style="font-weight:700;font-size:13.5px">${fmt(p.preco * c.q)}</div>

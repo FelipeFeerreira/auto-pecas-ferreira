@@ -20,7 +20,7 @@ window.pdpHTML = function (p, u) {
       </div>
 
       <div class="buyrow">
-        <div class="qty"><button onclick="menos()">−</button><span id="qtd">1</span><button onclick="mais()">+</button></div>
+        <div class="qty"><button type="button" onclick="menos()" aria-label="Diminuir quantidade">−</button><span id="qtd" aria-live="polite">1</span><button type="button" onclick="mais()" aria-label="Aumentar quantidade">+</button></div>
         <button class="btn primary" style="flex:1;min-width:200px" onclick="comprar()">Adicionar ao orçamento</button>
       </div>
       <div class="buyrow">
