@@ -72,6 +72,8 @@ for (const p of PRODUTOS) {
     brand: { "@type": "Brand", name: p.marca },
     category: p.cat,
     description: p.desc,
+    url: `${BASE}/p/${p.id}.html`,
+    image: [`${BASE}/assets/og-loja.jpg`],
     offers: {
       "@type": "Offer",
       url: `${BASE}/p/${p.id}.html`,
