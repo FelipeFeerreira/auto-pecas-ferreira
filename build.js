@@ -99,7 +99,17 @@ for (const p of PRODUTOS) {
   html = html.replace('<script src="../assets/pdp.js"></script>',
     '<script src="../assets/pdp.js"></script>');
   html = html.replace('</head>', `<meta property="og:type" content="product">\n<meta property="og:title" content="${titulo}">\n<meta property="og:description" content="${desc}">\n<meta property="og:url" content="${BASE}/p/${p.id}.html">\n${OG_IMAGE}\n</head>`);
-  html = html.replace("</head>", `<link rel="canonical" href="${BASE}/p/${p.id}.html">\n<script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n</head>`);
+  // BreadcrumbList espelha o caminho exibido na PDP: Início › Catálogo › Categoria
+  const crumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Início", item: `${BASE}/` },
+      { "@type": "ListItem", position: 2, name: "Catálogo", item: `${BASE}/produtos.html` },
+      { "@type": "ListItem", position: 3, name: p.cat, item: `${BASE}/produtos.html?cat=${encodeURIComponent(p.cat)}` }
+    ]
+  };
+  html = html.replace("</head>", `<link rel="canonical" href="${BASE}/p/${p.id}.html">\n<script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n<script type="application/ld+json">${JSON.stringify(crumbs)}</script>\n</head>`);
   html = html.replace('<script src="../assets/produtos.js"></script>',
     `<script>window.FORCED_ID = "${p.id}";</script>\n<script src="../assets/produtos.js"></script>`);
 
