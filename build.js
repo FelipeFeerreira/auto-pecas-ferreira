@@ -12,6 +12,17 @@ const PRODUTOS = W.PRODUTOS;
 const LOJA = W.LOJA;
 const BASE = "https://felipefeerreira.github.io/auto-pecas-ferreira";
 
+
+/* helpers do app.js reavaliados fora do navegador para pré-renderizar a PDP */
+const stubDoc = { addEventListener(){}, getElementById(){ return null; }, querySelector(){ return null; }, querySelectorAll(){ return []; } };
+const appSandbox = { window: {}, document: stubDoc, localStorage: { getItem(){ return null; }, setItem(){} }, location: { pathname: "/p/x.html" }, URLSearchParams };
+const appFn = new Function("window","document","localStorage","location","URLSearchParams",
+  fs.readFileSync(path.join(root, "assets/app.js"), "utf8") + "\nreturn {fmt, parcelas, ICONE};");
+const APP = appFn(appSandbox.window, appSandbox.document, appSandbox.localStorage, appSandbox.location, URLSearchParams);
+const pdpSrc = fs.readFileSync(path.join(root, "assets/pdp.js"), "utf8");
+new Function("window", pdpSrc)(appSandbox.window);
+const pdpHTML = appSandbox.window.pdpHTML;
+
 const tpl = fs.readFileSync(path.join(root, "produto.html"), "utf8");
 fs.mkdirSync(path.join(root, "p"), { recursive: true });
 
@@ -52,6 +63,12 @@ for (const p of PRODUTOS) {
   html = html.replace('<meta name="description" content="Ficha técnica, aplicação por veículo, garantia e preço da peça. Entrega no mesmo dia em Salto, Itu e Pardinho.">',
     `<meta name="description" content="${p.nome} ${p.marca} código ${p.ref}. ${p.aplicacao[0]}. R$ ${money(p.preco)} com entrega no mesmo dia em Salto, Itu e Pardinho.">`);
   html = html.replace('<link rel="canonical"', '<link rel="canonical-x"'); // no-op safety
+  const pdp = pdpHTML(p, { ICONE: APP.ICONE, fmt: APP.fmt, parcelas: APP.parcelas, cfg: LOJA });
+  html = html.replace('<div class="pdp" id="pdp"></div>', `<div class="pdp" id="pdp">${pdp}</div>`);
+  html = html.replace('<span id="crumbcat"></span>', `<span id="crumbcat">${p.cat}</span>`);
+  html = html.replace('<script src="../assets/pdp.js"></script>',
+    '<script src="../assets/pdp.js"></script>');
+  html = html.replace('</head>', `<meta property="og:type" content="product">\n<meta property="og:title" content="${p.nome} ${p.marca} ${p.ref} — Auto Peças Ferreira">\n<meta property="og:description" content="${p.nome} ${p.marca} código ${p.ref} por R$ ${money(p.preco)} com entrega no mesmo dia em Salto, Itu e Pardinho.">\n<meta property="og:url" content="${BASE}/p/${p.id}.html">\n</head>`);
   html = html.replace("</head>", `<link rel="canonical" href="${BASE}/p/${p.id}.html">\n<script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n</head>`);
   html = html.replace('<script src="../assets/produtos.js"></script>',
     `<script>window.FORCED_ID = "${p.id}";</script>\n<script src="../assets/produtos.js"></script>`);
