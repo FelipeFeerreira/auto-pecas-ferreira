@@ -16,6 +16,7 @@ window.pdpHTML = function (p, u) {
       <div class="pricebox">
         <div class="big">${fmt(p.preco)}</div>
         <div class="inst">ou 3x de ${parcelas(p.preco)} sem juros no cartão · Pix com ${fmt(p.preco)} na entrega</div>
+        <div class="price-note" style="font-size:11.5px;color:var(--muted);margin-top:6px">Preços sujeitos a alteração sem aviso. Confirme o valor pelo WhatsApp antes de fechar.</div>
         <div class="stock"><span class="dot"></span>${esgotado ? "Sob encomenda — consulte prazo" : `${p.estoque} em estoque · entrega hoje se confirmar até 15h`}</div>
       </div>
 
