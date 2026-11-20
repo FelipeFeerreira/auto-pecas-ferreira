@@ -35,6 +35,23 @@ const rel = s => s
 
 const money = n => n.toFixed(2).replace(".", ",");
 
+/* Título sem repetir a marca ("Bosch Bosch") e dentro de ~60 caracteres:
+   o template antigo colava sempre `${nome} ${marca} ${ref} — Auto Peças Ferreira`,
+   o que duplicava a marca em 7 páginas e passava de 60 caracteres em 13 URLs. */
+function nomeComMarca(p) {
+  const tem = new RegExp(`\\b${p.marca.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(p.nome);
+  return tem ? p.nome : `${p.nome} ${p.marca}`;
+}
+function tituloPeca(p) {
+  let base = p.nome.trim();
+  const nomeTemMarca = new RegExp(`\\b${p.marca.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i").test(base);
+  if (!nomeTemMarca) base = `${base} ${p.marca}`;
+  if (p.ref && !base.toUpperCase().includes(p.ref.toUpperCase())) base = `${base} ${p.ref}`;
+  base = base.replace(/\s+/g, " ").trim();
+  const sufixo = " | Auto Peças Ferreira";
+  return base.length + sufixo.length <= 60 ? base + sufixo : base;
+}
+
 let n = 0;
 for (const p of PRODUTOS) {
   const jsonld = {
@@ -58,17 +75,19 @@ for (const p of PRODUTOS) {
   };
 
   let html = rel(tpl);
+  const titulo = tituloPeca(p);
   html = html.replace("<title>Peça — Auto Peças Ferreira</title>",
-    `<title>${p.nome} ${p.marca} ${p.ref} — Auto Peças Ferreira</title>`);
+    `<title>${titulo}</title>`);
+  const desc = `${nomeComMarca(p)} código ${p.ref}. ${p.aplicacao[0]}. R$ ${money(p.preco)} com entrega no mesmo dia em Salto, Itu e Pardinho.`;
   html = html.replace('<meta name="description" content="Ficha técnica, aplicação por veículo, garantia e preço da peça. Entrega no mesmo dia em Salto, Itu e Pardinho.">',
-    `<meta name="description" content="${p.nome} ${p.marca} código ${p.ref}. ${p.aplicacao[0]}. R$ ${money(p.preco)} com entrega no mesmo dia em Salto, Itu e Pardinho.">`);
+    `<meta name="description" content="${desc}">`);
   html = html.replace('<link rel="canonical"', '<link rel="canonical-x"'); // no-op safety
   const pdp = pdpHTML(p, { ICONE: APP.ICONE, fmt: APP.fmt, parcelas: APP.parcelas, cfg: LOJA });
   html = html.replace('<div class="pdp" id="pdp"></div>', `<div class="pdp" id="pdp">${pdp}</div>`);
   html = html.replace('<span id="crumbcat"></span>', `<span id="crumbcat">${p.cat}</span>`);
   html = html.replace('<script src="../assets/pdp.js"></script>',
     '<script src="../assets/pdp.js"></script>');
-  html = html.replace('</head>', `<meta property="og:type" content="product">\n<meta property="og:title" content="${p.nome} ${p.marca} ${p.ref} — Auto Peças Ferreira">\n<meta property="og:description" content="${p.nome} ${p.marca} código ${p.ref} por R$ ${money(p.preco)} com entrega no mesmo dia em Salto, Itu e Pardinho.">\n<meta property="og:url" content="${BASE}/p/${p.id}.html">\n</head>`);
+  html = html.replace('</head>', `<meta property="og:type" content="product">\n<meta property="og:title" content="${titulo}">\n<meta property="og:description" content="${desc}">\n<meta property="og:url" content="${BASE}/p/${p.id}.html">\n</head>`);
   html = html.replace("</head>", `<link rel="canonical" href="${BASE}/p/${p.id}.html">\n<script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n</head>`);
   html = html.replace('<script src="../assets/produtos.js"></script>',
     `<script>window.FORCED_ID = "${p.id}";</script>\n<script src="../assets/produtos.js"></script>`);
