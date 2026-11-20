@@ -138,6 +138,48 @@ injeta("produtos.html", [
     '<div class="grid" id="lista" style="padding-bottom:46px">', listaHTML)
 ]);
 
+/* ---------- canonical e Open Graph nas páginas fixas ----------
+   index/produtos/carrinho não passavam por template: produtos e carrinho saíam
+   sem <link rel="canonical"> e sem og:url, então o Google tratava as URLs
+   ?cat=/?q= como páginas distintas e o preview social não tinha endereço. */
+function headSeo(arquivo, { url, type, title, desc }) {
+  const p = path.join(root, arquivo);
+  let html = fs.readFileSync(p, "utf8");
+  const antes = html;
+  const tags = [];
+  if (!html.includes('rel="canonical"')) tags.push(`<link rel="canonical" href="${url}">`);
+  if (!html.includes('property="og:url"')) {
+    tags.push(
+      `<meta property="og:type" content="${type}">`,
+      `<meta property="og:site_name" content="Auto Peças Ferreira">`,
+      `<meta property="og:title" content="${title}">`,
+      `<meta property="og:description" content="${desc}">`,
+      `<meta property="og:url" content="${url}">`
+    );
+  }
+  if (tags.length) html = html.replace("\n</head>", "\n" + tags.join("\n") + "\n</head>");
+  if (html !== antes) fs.writeFileSync(p, html);
+  return html !== antes ? " corrigido" : " ok";
+}
+
+const seoLog = [
+  headSeo("index.html", {
+    url: `${BASE}/`, type: "website",
+    title: "Auto Peças Ferreira — peças com entrega no dia em Salto, Itu e região",
+    desc: "Autopeças Bosch, Nakata, Monroe e mais com preço de distribuidora e entrega no mesmo dia em Salto, Itu, Pardinho e região."
+  }),
+  headSeo("produtos.html", {
+    url: `${BASE}/produtos.html`, type: "website",
+    title: "Catálogo de peças — Auto Peças Ferreira",
+    desc: "Catálogo de autopeças com preço e aplicação por veículo. Entrega no mesmo dia em Salto, Itu e Pardinho."
+  }),
+  headSeo("carrinho.html", {
+    url: `${BASE}/carrinho.html`, type: "website",
+    title: "Meu orçamento — Auto Peças Ferreira",
+    desc: "Revise as peças do seu orçamento e envie para a Auto Peças Ferreira pelo WhatsApp."
+  })
+].join(",");
+
 /* ---------- oficina/: canonical e Open Graph no domínio publicado ----------
    A página veio do site original no openbot.site e ficou com canonical, og:url,
    og:image e o JSON-LD apontando para lá. Com dois domínios, o Google descarta
@@ -151,4 +193,4 @@ const oficinaDepois = oficinaAntes
   .split(OFICINA_ORIG).join(`${BASE}/oficina/`);
 if (oficinaDepois !== oficinaAntes) fs.writeFileSync(oficinaPath, oficinaDepois);
 
-console.log(`geradas ${n} páginas de produto + sitemap (${urls.length} URLs) + robots.txt + catálogo estático em index/produtos (${PRODUTOS.length} cards) + canonical de oficina/${oficinaDepois !== oficinaAntes ? " corrigido" : " ok"}`);
+console.log(`geradas ${n} páginas de produto + sitemap (${urls.length} URLs) + robots.txt + catálogo estático em index/produtos (${PRODUTOS.length} cards) + canonical de oficina/${oficinaDepois !== oficinaAntes ? " corrigido" : " ok"} + head(seo)${seoLog}`);
