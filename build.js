@@ -91,4 +91,51 @@ ${urls.map(u => `  <url><loc>${u}</loc><changefreq>weekly</changefreq><priority>
 </urlset>
 `);
 fs.writeFileSync(path.join(root, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${BASE}/sitemap.xml\n`);
-console.log(`geradas ${n} páginas de produto + sitemap (${urls.length} URLs) + robots.txt`);
+
+/* ---------- catálogo e destaques no HTML estático (index/produtos) ----------
+   Sem isso o catálogo, os links para as 20 páginas de peça e a home só existiam
+   depois do JS: o rastreador via uma div vazia. */
+const catSandbox = {
+  window: W,
+  document: { addEventListener(){}, getElementById(){ return null; }, querySelector(){ return null; }, querySelectorAll(){ return []; }, createElement(){ return {}; }, body: {} },
+  localStorage: { getItem(){ return null; }, setItem(){} },
+  location: { pathname: "/produtos.html", href: "/produtos.html" },
+  URLSearchParams
+};
+W.location = catSandbox.location;
+const CAT = new Function("window","document","localStorage","location","URLSearchParams",
+  fs.readFileSync(path.join(root, "assets/app.js"), "utf8") + "\nreturn {cardHTML, fmt};")(W, catSandbox.document, catSandbox.localStorage, catSandbox.location, URLSearchParams);
+
+const ICONES = {"Combustível":"⛽","Filtros":"🧽","Freios":"🛑","Motor":"⚙️","Suspensão":"🔩","Elétrica":"🔌","Óleo e fluidos":"🛢️"};
+const catsHTML = [...new Set(PRODUTOS.map(p => p.cat))]
+  .map(c => `<a class="catcard" href="produtos.html?cat=${encodeURIComponent(c)}"><span>${ICONES[c] || "🔧"}</span>${c}</a>`)
+  .join("");
+const destaquesHTML = PRODUTOS.filter(p => p.destaque).slice(0, 8).map(CAT.cardHTML).join("");
+const listaHTML = PRODUTOS.map(CAT.cardHTML).join("");
+const resumoHTML = `${PRODUTOS.length} peças · entrega hoje em Salto, Itu e Pardinho`;
+
+const bloco = (key, needle, abertura, conteudo) => html =>
+  html.includes(`<!--b:${key}-->`)
+    ? html.replace(new RegExp(`<!--b:${key}-->[\\s\\S]*?<!--/b:${key}-->`),
+        `<!--b:${key}-->${conteudo}<!--/b:${key}-->`)
+    : html.replace(needle, `${abertura}<!--b:${key}-->${conteudo}<!--/b:${key}-->`);
+
+function injeta(arquivo, passos){
+  const p = path.join(root, arquivo);
+  let html = fs.readFileSync(p, "utf8");
+  for (const f of passos) html = f(html);
+  fs.writeFileSync(p, html);
+}
+
+injeta("index.html", [
+  bloco("cats", '<div class="cats" id="cats"></div>', '<div class="cats" id="cats">', catsHTML),
+  bloco("destaques", '<div class="grid" id="destaques"></div>', '<div class="grid" id="destaques">', destaquesHTML)
+]);
+injeta("produtos.html", [
+  bloco("resumo", '<p style="margin:0;color:var(--muted);font-size:13.5px" id="resumo"></p>',
+    '<p style="margin:0;color:var(--muted);font-size:13.5px" id="resumo">', resumoHTML),
+  bloco("lista", '<div class="grid" id="lista" style="padding-bottom:46px"></div>',
+    '<div class="grid" id="lista" style="padding-bottom:46px">', listaHTML)
+]);
+
+console.log(`geradas ${n} páginas de produto + sitemap (${urls.length} URLs) + robots.txt + catálogo estático em index/produtos (${PRODUTOS.length} cards)`);
