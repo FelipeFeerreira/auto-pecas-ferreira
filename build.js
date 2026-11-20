@@ -12,6 +12,15 @@ const PRODUTOS = W.PRODUTOS;
 const LOJA = W.LOJA;
 const BASE = "https://felipefeerreira.github.io/auto-pecas-ferreira";
 
+/* Card social genérico (1200x630, gerado por tools/gerar-og.py com os dados da
+   própria loja — sem foto de peça). Sem og:image o link no WhatsApp sai sem miniatura. */
+const OG_IMAGE = `<meta property="og:image" content="${BASE}/assets/og-loja.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Auto Peças Ferreira — entrega no mesmo dia em Salto, Itu e Pardinho">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${BASE}/assets/og-loja.jpg">`;
+
 
 /* helpers do app.js reavaliados fora do navegador para pré-renderizar a PDP */
 const stubDoc = { addEventListener(){}, getElementById(){ return null; }, querySelector(){ return null; }, querySelectorAll(){ return []; } };
@@ -87,7 +96,7 @@ for (const p of PRODUTOS) {
   html = html.replace('<span id="crumbcat"></span>', `<span id="crumbcat">${p.cat}</span>`);
   html = html.replace('<script src="../assets/pdp.js"></script>',
     '<script src="../assets/pdp.js"></script>');
-  html = html.replace('</head>', `<meta property="og:type" content="product">\n<meta property="og:title" content="${titulo}">\n<meta property="og:description" content="${desc}">\n<meta property="og:url" content="${BASE}/p/${p.id}.html">\n</head>`);
+  html = html.replace('</head>', `<meta property="og:type" content="product">\n<meta property="og:title" content="${titulo}">\n<meta property="og:description" content="${desc}">\n<meta property="og:url" content="${BASE}/p/${p.id}.html">\n${OG_IMAGE}\n</head>`);
   html = html.replace("</head>", `<link rel="canonical" href="${BASE}/p/${p.id}.html">\n<script type="application/ld+json">${JSON.stringify(jsonld)}</script>\n</head>`);
   html = html.replace('<script src="../assets/produtos.js"></script>',
     `<script>window.FORCED_ID = "${p.id}";</script>\n<script src="../assets/produtos.js"></script>`);
@@ -177,6 +186,9 @@ function headSeo(arquivo, { url, type, title, desc }) {
     );
   }
   if (tags.length) html = html.replace("\n</head>", "\n" + tags.join("\n") + "\n</head>");
+  if (!html.includes('property="og:image"')) {
+    html = html.replace("\n</head>", "\n" + OG_IMAGE + "\n</head>");
+  }
   if (html !== antes) fs.writeFileSync(p, html);
   return html !== antes ? " corrigido" : " ok";
 }
