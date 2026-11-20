@@ -105,17 +105,35 @@ for (const p of PRODUTOS) {
   n++;
 }
 
+/* <lastmod> sai da data do último commit que tocou o arquivo gerado
+   (`git log -1 --format=%cs`), nunca de data fixa à mão. Arquivo ainda não
+   commitado cai na data do HEAD; sem git disponível, a tag é omitida. */
+const { execSync } = require("child_process");
+const headDate = (() => {
+  try { return execSync("git log -1 --format=%cs", { cwd: root, encoding: "utf8" }).trim(); }
+  catch { return ""; }
+})();
+const lastMod = (rel) => {
+  try {
+    const d = execSync(`git log -1 --format=%cs -- "${rel}"`, { cwd: root, encoding: "utf8" }).trim();
+    return d || headDate;
+  } catch { return headDate; }
+};
+
 const urls = [
-  `${BASE}/`,
-  `${BASE}/produtos.html`,
-  `${BASE}/carrinho.html`,
-  `${BASE}/oficina/`,
-  ...PRODUTOS.map(p => `${BASE}/p/${p.id}.html`)
+  { loc: `${BASE}/`, file: "index.html" },
+  { loc: `${BASE}/produtos.html`, file: "produtos.html" },
+  { loc: `${BASE}/carrinho.html`, file: "carrinho.html" },
+  { loc: `${BASE}/oficina/`, file: "oficina/index.html" },
+  ...PRODUTOS.map(p => ({ loc: `${BASE}/p/${p.id}.html`, file: `p/${p.id}.html` }))
 ];
 fs.writeFileSync(path.join(root, "sitemap.xml"),
 `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(u => `  <url><loc>${u}</loc><changefreq>weekly</changefreq><priority>${u.endsWith("/") ? "1.0" : "0.8"}</priority></url>`).join("\n")}
+${urls.map(({ loc, file }) => {
+  const lm = lastMod(file);
+  return `  <url><loc>${loc}</loc>${lm ? `<lastmod>${lm}</lastmod>` : ""}<changefreq>weekly</changefreq><priority>${loc.endsWith("/") ? "1.0" : "0.8"}</priority></url>`;
+}).join("\n")}
 </urlset>
 `);
 fs.writeFileSync(path.join(root, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${BASE}/sitemap.xml\n`);
