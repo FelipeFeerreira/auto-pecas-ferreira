@@ -138,4 +138,17 @@ injeta("produtos.html", [
     '<div class="grid" id="lista" style="padding-bottom:46px">', listaHTML)
 ]);
 
-console.log(`geradas ${n} páginas de produto + sitemap (${urls.length} URLs) + robots.txt + catálogo estático em index/produtos (${PRODUTOS.length} cards)`);
+/* ---------- oficina/: canonical e Open Graph no domínio publicado ----------
+   A página veio do site original no openbot.site e ficou com canonical, og:url,
+   og:image e o JSON-LD apontando para lá. Com dois domínios, o Google descarta
+   esta cópia e o preview social busca imagem em outro host. */
+const OFICINA_ORIG = "https://mecanica-eletrica-stop-pardinho-sp-site-k27yq8y5dd.openbot.site";
+const oficinaPath = path.join(root, "oficina/index.html");
+const oficinaAntes = fs.readFileSync(oficinaPath, "utf8");
+const oficinaDepois = oficinaAntes
+  .split(`${OFICINA_ORIG}/images/`).join(`${BASE}/oficina/images/`)
+  .split(`${OFICINA_ORIG}/#`).join(`${BASE}/oficina/#`)
+  .split(OFICINA_ORIG).join(`${BASE}/oficina/`);
+if (oficinaDepois !== oficinaAntes) fs.writeFileSync(oficinaPath, oficinaDepois);
+
+console.log(`geradas ${n} páginas de produto + sitemap (${urls.length} URLs) + robots.txt + catálogo estático em index/produtos (${PRODUTOS.length} cards) + canonical de oficina/${oficinaDepois !== oficinaAntes ? " corrigido" : " ok"}`);
