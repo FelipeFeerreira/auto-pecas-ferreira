@@ -184,7 +184,7 @@ function cardHTML(p){
   const tagClass = (p.tag === "Oferta" || p.tag === "Mais vendido") ? "hot" : "";
   return `<article class="pcard">
     ${p.tag ? `<span class="tag ${tagClass}">${p.tag}</span>` : ""}
-    <a class="thumb" href="${prodUrl(p.id)}">${ICONE}</a>
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="${prodUrl(p.id)}">${ICONE}</a>
     <div class="info">
       <div class="brandline">${p.marca}</div>
       <a class="nm" href="${prodUrl(p.id)}">${p.nome}</a>
