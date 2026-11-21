@@ -21,6 +21,12 @@ const OG_IMAGE = `<meta property="og:image" content="${BASE}/assets/og-loja.jpg"
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="${BASE}/assets/og-loja.jpg">`;
 
+/* Favicon: a própria marca do site (🔧 no quadrado vermelho do `.brand .m`),
+   gerado por tools/gerar-favicon.py. Antes, 24 das 25 páginas não tinham ícone
+   e /favicon.ico dava 404 — a aba e o favorito mostravam o ícone genérico. */
+const ICON = `<link rel="icon" type="image/png" sizes="96x96" href="${BASE}/assets/favicon-96.png">
+<link rel="apple-touch-icon" href="${BASE}/assets/favicon-180.png">`;
+
 
 /* helpers do app.js reavaliados fora do navegador para pré-renderizar a PDP */
 const stubDoc = { addEventListener(){}, getElementById(){ return null; }, querySelector(){ return null; }, querySelectorAll(){ return []; } };
@@ -100,7 +106,7 @@ for (const p of PRODUTOS) {
   html = html.replace('<span id="crumbcat"></span>', `<span id="crumbcat">${p.cat}</span>`);
   html = html.replace('<script src="../assets/pdp.js"></script>',
     '<script src="../assets/pdp.js"></script>');
-  html = html.replace('</head>', `<meta property="og:type" content="product">\n<meta property="og:title" content="${titulo}">\n<meta property="og:description" content="${desc}">\n<meta property="og:url" content="${BASE}/p/${p.id}.html">\n${OG_IMAGE}\n</head>`);
+  html = html.replace('</head>', `<meta property="og:type" content="product">\n<meta property="og:title" content="${titulo}">\n<meta property="og:description" content="${desc}">\n<meta property="og:url" content="${BASE}/p/${p.id}.html">\n${OG_IMAGE}\n${ICON}\n</head>`);
   // BreadcrumbList espelha o caminho exibido na PDP: Início › Catálogo › Categoria
   const crumbs = {
     "@context": "https://schema.org",
@@ -266,6 +272,7 @@ function headSeo(arquivo, { url, type, title, desc, robots }) {
   const antes = html;
   const tags = [];
   if (!html.includes('rel="canonical"')) tags.push(`<link rel="canonical" href="${url}">`);
+  if (!html.includes('rel="icon"')) tags.push(ICON);
   if (!html.includes('property="og:url"')) {
     tags.push(
       `<meta property="og:type" content="${type}">`,
