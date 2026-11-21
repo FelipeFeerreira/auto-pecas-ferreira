@@ -56,8 +56,9 @@ function whatsappLink(extra=""){
 function drawerHTML(){
   if (document.getElementById("drawer")) return;
   const el = document.createElement("div");
+  el.id = "cartUi";
   el.innerHTML = `
-  <div class="overlay" id="overlay" onclick="closeCart()"></div>
+  <div class="overlay" id="overlay" aria-hidden="true" onclick="closeCart()"></div>
   <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
     <div class="dh"><h2 id="drawer-title">Seu orçamento</h2><button type="button" class="x" onclick="closeCart()" aria-label="Fechar orçamento">×</button></div>
     <div class="dbody" id="dbody"></div>
@@ -77,12 +78,34 @@ function setCartState(open){
   });
 }
 let lastFocus = null;
+let hiddenBg = [];
+function setBackgroundHidden(hidden){
+  if (hidden){
+    hiddenBg = [];
+    Array.from(document.body.children).forEach(n => {
+      if (n.id === "cartUi" || n.tagName === "SCRIPT") return;
+      if (n.getAttribute("aria-hidden") === "true") return;
+      n.setAttribute("aria-hidden", "true");
+      hiddenBg.push(n);
+    });
+  } else {
+    hiddenBg.forEach(n => n.removeAttribute("aria-hidden"));
+    hiddenBg = [];
+  }
+}
+function drawerFocusables(){
+  const d = document.getElementById("drawer");
+  if (!d) return [];
+  return Array.from(d.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'))
+    .filter(x => x.offsetWidth || x.offsetHeight || x.getClientRects().length);
+}
 function openCart(){
   drawerHTML();
   lastFocus = document.activeElement;
   document.getElementById("drawer").classList.add("on");
   document.getElementById("overlay").classList.add("on");
   setCartState(true);
+  setBackgroundHidden(true);
   const x = document.querySelector("#drawer .x");
   if (x) x.focus();
 }
@@ -93,15 +116,27 @@ function closeCart(){
   d.classList.remove("on");
   document.getElementById("overlay").classList.remove("on");
   setCartState(false);
+  setBackgroundHidden(false);
   if (wasOpen){
-    const back = (lastFocus && document.contains(lastFocus)) ? lastFocus : document.querySelector(".cartbtn");
+    const ok = lastFocus && lastFocus !== document.body && lastFocus !== document.documentElement && document.contains(lastFocus) && lastFocus.focus;
+    const back = ok ? lastFocus : document.querySelector(".cartbtn");
     if (back) back.focus();
   }
 }
 document.addEventListener("keydown", e => {
-  if (e.key !== "Escape") return;
   const d = document.getElementById("drawer");
-  if (d && d.classList.contains("on")) closeCart();
+  const open = !!(d && d.classList.contains("on"));
+  if (e.key === "Escape"){
+    if (open) closeCart();
+    return;
+  }
+  if (e.key !== "Tab" || !open) return;
+  const f = drawerFocusables();
+  if (!f.length) return;
+  const first = f[0], last = f[f.length - 1];
+  if (!d.contains(document.activeElement)){ e.preventDefault(); first.focus(); return; }
+  if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
 });
 
 let toastTimer;
