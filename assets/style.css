@@ -173,6 +173,10 @@ footer.site a:hover{color:var(--txt)}
 
 /* ajustes de celular estreito */
 @media(max-width:430px){
+  .bar{gap:10px}
+  .brand{min-width:0}
+  .brand>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .cartbtn{flex:0 0 auto;padding:9px 10px;gap:6px}
   .pcard .actions{flex-direction:column}
   .pcard .actions .btn{width:100%;padding:8px 6px}
   .pcard .pr b{font-size:17px}
