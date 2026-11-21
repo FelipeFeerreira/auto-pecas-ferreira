@@ -38,6 +38,7 @@ fs.mkdirSync(path.join(root, "p"), { recursive: true });
 const rel = s => s
   .replace(/href="assets\//g, 'href="../assets/')
   .replace(/src="assets\//g, 'src="../assets/')
+  .replace(/href="oficina\//g, 'href="../oficina/')
   .replace(/href="index\.html/g, 'href="../index.html')
   .replace(/href="produtos\.html/g, 'href="../produtos.html')
   .replace(/href="carrinho\.html/g, 'href="../carrinho.html');
