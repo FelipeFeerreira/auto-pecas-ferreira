@@ -1,7 +1,7 @@
 :root{
   --bg:#0b0d10; --panel:#14181e; --panel2:#1a1f27; --line:#262c36;
-  --txt:#e9edf3; --muted:#94a0b1; --red:#e03a2c; --red-dark:#b32a1f;
-  --green:#25d366; --amber:#f5a623; --blue:#3d8bff;
+  --txt:#e9edf3; --muted:#94a0b1; --red:#e03a2c; --red-dark:#b32a1f; --red-btn:#d5362a;
+  --green:#25d366; --amber:#f5a623; --blue:#2a6ad4;
   --max:1180px;
 }
 *{box-sizing:border-box}
@@ -11,7 +11,7 @@ a{color:inherit;text-decoration:none}
 img{max-width:100%}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 16px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:12px 18px;font-weight:700;font-size:14px;cursor:pointer;transition:.15s}
-.btn.primary{background:var(--red);color:#fff}
+.btn.primary{background:var(--red-btn);color:#fff}
 .btn.primary:hover{background:var(--red-dark)}
 .btn.ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
 .btn.ghost:hover{border-color:#37404d}
@@ -31,7 +31,7 @@ nav.links{display:flex;gap:18px;font-size:13.5px;color:var(--muted)}
 nav.links a:hover{color:var(--txt)}
 nav.links a[aria-current="page"]{color:var(--txt);font-weight:700}
 .cartbtn{position:relative;display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 13px;font-family:inherit;line-height:inherit;font-size:13.5px;cursor:pointer;color:var(--txt)}
-.badge{position:absolute;top:-7px;right:-7px;background:var(--red);color:#fff;font-size:10.5px;font-weight:800;border-radius:999px;min-width:19px;height:19px;display:grid;place-items:center;padding:0 4px}
+.badge{position:absolute;top:-7px;right:-7px;background:var(--red-btn);color:#fff;font-size:10.5px;font-weight:800;border-radius:999px;min-width:19px;height:19px;display:grid;place-items:center;padding:0 4px}
 @media(max-width:900px){nav.links{display:none}}
 @media(max-width:720px){.searchbox{display:none}.bar{height:60px}}
 
@@ -94,7 +94,7 @@ section.blk{padding:34px 0}
 /* filtros */
 .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0}
 .chip{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:8px 13px;border-radius:999px;font-size:13px;cursor:pointer}
-.chip.on{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
+.chip.on{background:var(--red-btn);border-color:var(--red-btn);color:#fff;font-weight:700}
 select{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:9px 12px;font-size:13px}
 
 /* produto página */
