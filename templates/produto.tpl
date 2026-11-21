@@ -9,6 +9,8 @@
 </head>
 <body>
 
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
 <header class="site">
   <div class="wrap bar">
     <a class="brand" href="index.html">
@@ -28,6 +30,8 @@
   </div>
 </header>
 
+<main id="conteudo" tabindex="-1">
+
 <div class="wrap">
   <div class="crumb"><a href="index.html">Início</a> › <a href="produtos.html">Catálogo</a> › <span id="crumbcat"></span></div>
   <div class="pdp" id="pdp"></div>
@@ -36,6 +40,8 @@
     <div class="grid" id="relacionados" style="padding-bottom:20px"></div>
   </section>
 </div>
+
+</main>
 
 <footer class="site">
   <div class="wrap">

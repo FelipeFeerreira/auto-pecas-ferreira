@@ -114,6 +114,9 @@ select{background:var(--panel);border:1px solid var(--line);color:var(--txt);bor
 .qty span{width:44px;text-align:center;font-weight:700}
 
 /* foco visível para navegação por teclado */
+.skip{position:absolute;left:-9999px;top:0;z-index:60;background:var(--blue);color:#fff;padding:10px 16px;border-radius:0 0 10px 0;font-weight:700;font-size:14px;text-decoration:none}
+.skip:focus{left:0;outline:2px solid #fff;outline-offset:-4px}
+main#conteudo:focus{outline:none}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .qty button:focus-visible,aside.drawer button:focus-visible{outline-offset:-2px}
 .buyrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
