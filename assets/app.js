@@ -68,7 +68,7 @@ function drawerHTML(){
       <a class="btn ghost block" href="carrinho.html" style="margin-top:8px">Revisar pedido</a>
     </div>
   </aside>
-  <div class="toast" id="toast"></div>`;
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>`;
   document.body.appendChild(el);
   setDrawerHidden(true);
 }
