@@ -24,7 +24,7 @@
       <a href="index.html#como">Como funciona</a>
       <a href="index.html#contato">Contato</a>
     </nav>
-    <div class="cartbtn" onclick="openCart()">🛒 Orçamento <span class="badge" id="badge">0</span></div>
+    <button type="button" class="cartbtn" onclick="openCart()">🛒 Orçamento <span class="badge" id="badge">0</span></button>
   </div>
 </header>
 
