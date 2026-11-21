@@ -43,6 +43,7 @@ const rel = s => s
   .replace(/href="carrinho\.html/g, 'href="../carrinho.html');
 
 const money = n => n.toFixed(2).replace(".", ",");
+const moneySchema = n => n.toFixed(2);
 
 /* Título sem repetir a marca ("Bosch Bosch") e dentro de ~60 caracteres:
    o template antigo colava sempre `${nome} ${marca} ${ref} — Auto Peças Ferreira`,
@@ -78,7 +79,7 @@ for (const p of PRODUTOS) {
       "@type": "Offer",
       url: `${BASE}/p/${p.id}.html`,
       priceCurrency: "BRL",
-      price: money(p.preco),
+      price: moneySchema(p.preco),
       availability: p.estoque > 0 ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
       seller: { "@type": "Organization", name: LOJA.nome }
     },
@@ -227,7 +228,7 @@ const itemList = {
           "@type": "Offer",
           url: `${BASE}/p/${p.id}.html`,
           priceCurrency: "BRL",
-          price: money(p.preco),
+          price: moneySchema(p.preco),
           availability: p.estoque > 0 ? "https://schema.org/InStock" : "https://schema.org/PreOrder"
         }
       }
@@ -245,12 +246,13 @@ const catCrumbs = {
 {
   const p = path.join(root, "produtos.html");
   let html = fs.readFileSync(p, "utf8");
-  if (!html.includes('data-ld="catalogo"')) {
-    const ld = `<script type="application/ld+json" data-ld="catalogo">${JSON.stringify(itemList)}</script>\n` +
-               `<script type="application/ld+json" data-ld="catalogo-crumbs">${JSON.stringify(catCrumbs)}</script>\n`;
-    html = html.replace("\n</head>", "\n" + ld + "</head>");
-    fs.writeFileSync(p, html);
-  }
+  /* reescreve sempre: com o include() antigo o bloco velho ficava para sempre e
+     uma correção no schema (preço "315,00" -> "315.00") nunca chegava ao HTML */
+  html = html.replace(/<script type="application\/ld\+json" data-ld="catalogo(-crumbs)?">[\s\S]*?<\/script>\n?/g, "");
+  const ld = `<script type="application/ld+json" data-ld="catalogo">${JSON.stringify(itemList)}</script>\n` +
+             `<script type="application/ld+json" data-ld="catalogo-crumbs">${JSON.stringify(catCrumbs)}</script>\n`;
+  const out = html.replace("\n</head>", "\n" + ld + "</head>");
+  if (out !== html) fs.writeFileSync(p, out);
 }
 
 /* ---------- canonical e Open Graph nas páginas fixas ----------
