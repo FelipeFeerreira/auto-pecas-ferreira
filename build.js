@@ -287,7 +287,7 @@ function headSeo(arquivo, { url, type, title, desc, robots }) {
 const seoLog = [
   headSeo("index.html", {
     url: `${BASE}/`, type: "website",
-    title: "Auto Peças Ferreira — peças com entrega no dia em Salto, Itu e região",
+    title: "Auto Peças Ferreira — entrega no dia em Salto, Itu e região",
     desc: "Autopeças Bosch, Nakata, Monroe e mais com preço de distribuidora e entrega no mesmo dia em Salto, Itu, Pardinho e região."
   }),
   headSeo("produtos.html", {
