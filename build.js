@@ -150,7 +150,7 @@ ${urls.map(({ loc, file }) => {
 }).join("\n")}
 </urlset>
 `);
-fs.writeFileSync(path.join(root, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${BASE}/sitemap.xml\n`);
+fs.writeFileSync(path.join(root, "robots.txt"), `User-agent: *\nAllow: /\nDisallow: /templates/\nSitemap: ${BASE}/sitemap.xml\n`);
 
 /* ---------- catálogo e destaques no HTML estático (index/produtos) ----------
    Sem isso o catálogo, os links para as 20 páginas de peça e a home só existiam
