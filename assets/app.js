@@ -148,6 +148,27 @@ function toast(msg){
   toastTimer = setTimeout(() => t.classList.remove("on"), 1900);
 }
 
+/* Botão de envio do orçamento: sem item no carrinho ele fica realmente desativado
+   (sem href, fora do Tab, anunciado como indisponível) em vez de só parecer apagado. */
+function setEnviarState(a, hrefAtivo){
+  if (!a) return;
+  if (hrefAtivo){
+    a.href = hrefAtivo;
+    a.removeAttribute("aria-disabled");
+    a.removeAttribute("tabindex");
+    a.removeAttribute("title");
+    a.style.opacity = 1;
+    a.style.pointerEvents = "";
+  } else {
+    a.removeAttribute("href");
+    a.setAttribute("aria-disabled", "true");
+    a.setAttribute("tabindex", "-1");
+    a.title = "Adicione uma peça ao orçamento para enviar";
+    a.style.opacity = .45;
+    a.style.pointerEvents = "none";
+  }
+}
+
 function paintCart(){
   drawerHTML();
   const badge = document.getElementById("badge");
@@ -172,11 +193,7 @@ function paintCart(){
   }
   const dt = document.getElementById("dtotal");
   if (dt) dt.textContent = fmt(cartTotal());
-  const link = document.getElementById("dlink");
-  if (link){
-    link.href = cart.length ? whatsappLink() : "#";
-    link.style.opacity = cart.length ? 1 : .45;
-  }
+  setEnviarState(document.getElementById("dlink"), cart.length ? whatsappLink() : null);
 }
 
 /* ---------- cards ---------- */

@@ -121,9 +121,7 @@
     const carro = document.getElementById("carro").value.trim();
     const cidade = document.getElementById("cidade").value.trim();
     const extra = [nome && `Nome: ${nome}`, carro && `Carro: ${carro}`, cidade && `Entrega em: ${cidade}`].filter(Boolean).join("\n");
-    const a = document.getElementById("enviar");
-    a.href = cart.length ? whatsappLink(extra) : "#";
-    a.style.opacity = cart.length ? 1 : .45;
+    setEnviarState(document.getElementById("enviar"), cart.length ? whatsappLink(extra) : null);
   }
 
   ["nome","carro","cidade"].forEach(id=>document.getElementById(id).addEventListener("input", atualizarLink));
