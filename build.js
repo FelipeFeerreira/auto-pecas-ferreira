@@ -196,6 +196,62 @@ injeta("produtos.html", [
     '<div class="grid" id="lista" style="padding-bottom:46px">', listaHTML)
 ]);
 
+/* ---------- JSON-LD do catálogo (produtos.html) ----------
+   produtos.html não tinha nenhum bloco: os 20 cards estavam no HTML, mas nada
+   dizia ao rastreador que esta é a listagem das peças. CollectionPage com
+   numberOfItems e ItemList usa só dado que já sai no card (nome, código, URL da
+   PDP, preço publicado); BreadcrumbList só Início › Catálogo, o caminho que a
+   página realmente tem. O carrinho fica sem schema: é orçamento vazio e do
+   visitante, não conteúdo indexável. */
+const itemList = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Catálogo de peças — Auto Peças Ferreira",
+  url: `${BASE}/produtos.html`,
+  description: `Catálogo com ${PRODUTOS.length} peças Bosch, Nakata, Monroe e outras marcas, com preço e aplicação por veículo. Entrega no mesmo dia em Salto, Itu e Pardinho.`,
+  isPartOf: { "@type": "WebSite", name: LOJA.nome, url: `${BASE}/` },
+  mainEntity: {
+    "@type": "ItemList",
+    numberOfItems: PRODUTOS.length,
+    itemListElement: PRODUTOS.map((p, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Product",
+        name: p.nome,
+        sku: p.ref,
+        url: `${BASE}/p/${p.id}.html`,
+        brand: { "@type": "Brand", name: p.marca },
+        offers: {
+          "@type": "Offer",
+          url: `${BASE}/p/${p.id}.html`,
+          priceCurrency: "BRL",
+          price: money(p.preco),
+          availability: p.estoque > 0 ? "https://schema.org/InStock" : "https://schema.org/PreOrder"
+        }
+      }
+    }))
+  }
+};
+const catCrumbs = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Início", item: `${BASE}/` },
+    { "@type": "ListItem", position: 2, name: "Catálogo", item: `${BASE}/produtos.html` }
+  ]
+};
+{
+  const p = path.join(root, "produtos.html");
+  let html = fs.readFileSync(p, "utf8");
+  if (!html.includes('data-ld="catalogo"')) {
+    const ld = `<script type="application/ld+json" data-ld="catalogo">${JSON.stringify(itemList)}</script>\n` +
+               `<script type="application/ld+json" data-ld="catalogo-crumbs">${JSON.stringify(catCrumbs)}</script>\n`;
+    html = html.replace("\n</head>", "\n" + ld + "</head>");
+    fs.writeFileSync(p, html);
+  }
+}
+
 /* ---------- canonical e Open Graph nas páginas fixas ----------
    index/produtos/carrinho não passavam por template: produtos e carrinho saíam
    sem <link rel="canonical"> e sem og:url, então o Google tratava as URLs
