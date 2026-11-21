@@ -192,7 +192,7 @@ function cardHTML(p){
       <div class="pr"><b>${fmt(p.preco)}</b><small>ou 3x ${parcelas(p.preco)}</small></div>
       <div class="actions">
         <a class="btn ghost" href="${prodUrl(p.id)}">Ver</a>
-        <button class="btn primary" onclick="addToCart('${p.id}')">Adicionar</button>
+        <button class="btn primary" aria-label="Adicionar ${p.nome} ao orçamento" onclick="addToCart('${p.id}')">Adicionar</button>
       </div>
     </div>
   </article>`;
