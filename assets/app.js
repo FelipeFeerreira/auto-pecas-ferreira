@@ -58,8 +58,8 @@ function drawerHTML(){
   const el = document.createElement("div");
   el.innerHTML = `
   <div class="overlay" id="overlay" onclick="closeCart()"></div>
-  <aside class="drawer" id="drawer">
-    <div class="dh"><h2>Seu orçamento</h2><button class="x" onclick="closeCart()">×</button></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+    <div class="dh"><h2 id="drawer-title">Seu orçamento</h2><button type="button" class="x" onclick="closeCart()" aria-label="Fechar orçamento">×</button></div>
     <div class="dbody" id="dbody"></div>
     <div class="dfoot">
       <div class="row tot" style="border:0;margin:0 0 12px;padding:0"><span>Total</span><span id="dtotal">R$ 0,00</span></div>
@@ -70,8 +70,39 @@ function drawerHTML(){
   <div class="toast" id="toast"></div>`;
   document.body.appendChild(el);
 }
-function openCart(){ drawerHTML(); document.getElementById("drawer").classList.add("on"); document.getElementById("overlay").classList.add("on"); }
-function closeCart(){ drawerHTML(); document.getElementById("drawer").classList.remove("on"); document.getElementById("overlay").classList.remove("on"); }
+function setCartState(open){
+  document.querySelectorAll(".cartbtn").forEach(b => {
+    b.setAttribute("aria-expanded", open ? "true" : "false");
+    b.setAttribute("aria-controls", "drawer");
+  });
+}
+let lastFocus = null;
+function openCart(){
+  drawerHTML();
+  lastFocus = document.activeElement;
+  document.getElementById("drawer").classList.add("on");
+  document.getElementById("overlay").classList.add("on");
+  setCartState(true);
+  const x = document.querySelector("#drawer .x");
+  if (x) x.focus();
+}
+function closeCart(){
+  drawerHTML();
+  const d = document.getElementById("drawer");
+  const wasOpen = d.classList.contains("on");
+  d.classList.remove("on");
+  document.getElementById("overlay").classList.remove("on");
+  setCartState(false);
+  if (wasOpen){
+    const back = (lastFocus && document.contains(lastFocus)) ? lastFocus : document.querySelector(".cartbtn");
+    if (back) back.focus();
+  }
+}
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  const d = document.getElementById("drawer");
+  if (d && d.classList.contains("on")) closeCart();
+});
 
 let toastTimer;
 function toast(msg){
@@ -172,6 +203,7 @@ function whatsappFab(){
 
 document.addEventListener("DOMContentLoaded", () => {
   drawerHTML();
+  setCartState(false);
   paintCart();
   wireSearch();
   whatsappFab();
