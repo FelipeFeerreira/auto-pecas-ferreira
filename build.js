@@ -49,6 +49,21 @@ const rel = s => s
   .replace(/href="produtos\.html/g, 'href="../produtos.html')
   .replace(/href="carrinho\.html/g, 'href="../carrinho.html');
 
+/* CSS inline. A folha externa era o único bloqueio de render das páginas de
+   conteúdo: com 300 ms de RTT e 1,6 Mbps (390 px, CPU 4x), o <link> começava em
+   335 ms e terminava em 656 ms, e FCP = LCP = 784 ms. Com o mesmo CSS dentro do
+   <style>, FCP 392 ms e LCP 407 ms (~-48%, um RTT inteiro a menos), ao custo de
+   +3,6 KB gzip por página. style.css continua sendo a fonte única: o build
+   reescreve o bloco, então editar o CSS e rodar `node build.js` basta. */
+const CSS_SITE = fs.readFileSync(path.join(root, "assets/style.css"), "utf8").trim();
+const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+function inlineCSS(html, href){
+  const link = `<link rel="stylesheet" href="${href}">`;
+  const css = `<style data-inline="${href}">${CSS_SITE}</style>`;
+  const antigo = new RegExp(`<style data-inline="${reEsc(href)}">[\\s\\S]*?<\\/style>`);
+  return html.replace(antigo, link).split(link).join(css);
+}
+
 const money = n => n.toFixed(2).replace(".", ",");
 const moneySchema = n => n.toFixed(2);
 
@@ -121,6 +136,7 @@ for (const p of PRODUTOS) {
   html = html.replace('<script src="../assets/produtos.js"></script>',
     `<script>window.FORCED_ID = "${p.id}";</script>\n<script src="../assets/produtos.js"></script>`);
 
+  html = inlineCSS(html, "../assets/style.css");
   fs.writeFileSync(path.join(root, "p", `${p.id}.html`), html);
   n++;
 }
@@ -323,4 +339,14 @@ const oficinaDepois = oficinaAntes
   .split(OFICINA_ORIG).join(`${BASE}/oficina/`);
 if (oficinaDepois !== oficinaAntes) fs.writeFileSync(oficinaPath, oficinaDepois);
 
-console.log(`geradas ${n} páginas de produto + sitemap (${urls.length} URLs) + robots.txt + catálogo estático em index/produtos (${PRODUTOS.length} cards) + canonical de oficina/${oficinaDepois !== oficinaAntes ? " corrigido" : " ok"} + head(seo)${seoLog}`);
+/* páginas fixas: mesma folha, mesmo bloqueio de render */
+let cssInj = 0;
+for (const [arq, href] of [["index.html","assets/style.css"],["produtos.html","assets/style.css"],
+                           ["carrinho.html","assets/style.css"],["404.html","/auto-pecas-ferreira/assets/style.css"]]){
+  const fp = path.join(root, arq);
+  const antes = fs.readFileSync(fp, "utf8");
+  const depois = inlineCSS(antes, href);
+  if (depois !== antes){ fs.writeFileSync(fp, depois); cssInj++; }
+}
+
+console.log(`geradas ${n} páginas de produto + sitemap (${urls.length} URLs) + robots.txt + catálogo estático em index/produtos (${PRODUTOS.length} cards) + canonical de oficina/${oficinaDepois !== oficinaAntes ? " corrigido" : " ok"} + head(seo)${seoLog} + css inline em ${cssInj} fixas`);
