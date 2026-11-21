@@ -32,7 +32,7 @@ const pdpSrc = fs.readFileSync(path.join(root, "assets/pdp.js"), "utf8");
 new Function("window", pdpSrc)(appSandbox.window);
 const pdpHTML = appSandbox.window.pdpHTML;
 
-const tpl = fs.readFileSync(path.join(root, "produto.html"), "utf8");
+const tpl = fs.readFileSync(path.join(root, "templates", "produto.html"), "utf8");
 fs.mkdirSync(path.join(root, "p"), { recursive: true });
 
 const rel = s => s
