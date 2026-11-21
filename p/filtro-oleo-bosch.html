@@ -278,7 +278,63 @@ footer.site a:hover{color:var(--txt)}
     </div></div>
   <section class="blk" style="padding-top:0">
     <div class="head"><h2>Quem viu esta peça também levou</h2></div>
-    <div class="grid" id="relacionados" style="padding-bottom:20px"></div>
+    <div class="grid" id="relacionados" style="padding-bottom:20px"><article class="pcard">
+    
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="filtro-ar-bosch.html"><svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg></a>
+    <div class="info">
+      <div class="brandline">Bosch</div>
+      <a class="nm" href="filtro-ar-bosch.html">Filtro de ar Bosch</a>
+      <div class="ref">F026400208 · Filtros</div>
+      <div class="pr"><b>R$ 69,00</b><small>ou 3x R$ 23,00</small></div>
+      <div class="actions">
+        <a class="btn ghost" href="filtro-ar-bosch.html">Ver</a>
+        <button class="btn primary" aria-label="Adicionar Filtro de ar Bosch ao orçamento" onclick="addToCart('filtro-ar-bosch')">Adicionar</button>
+      </div>
+    </div>
+  </article><article class="pcard">
+    
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="filtro-comb-bosch.html"><svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg></a>
+    <div class="info">
+      <div class="brandline">Bosch</div>
+      <a class="nm" href="filtro-comb-bosch.html">Filtro de combustível Bosch</a>
+      <div class="ref">F026402047 · Filtros</div>
+      <div class="pr"><b>R$ 59,00</b><small>ou 3x R$ 19,67</small></div>
+      <div class="actions">
+        <a class="btn ghost" href="filtro-comb-bosch.html">Ver</a>
+        <button class="btn primary" aria-label="Adicionar Filtro de combustível Bosch ao orçamento" onclick="addToCart('filtro-comb-bosch')">Adicionar</button>
+      </div>
+    </div>
+  </article><article class="pcard">
+    <span class="tag hot">Oferta</span>
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="bomba-bosch-flex.html"><svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg></a>
+    <div class="info">
+      <div class="brandline">Bosch</div>
+      <a class="nm" href="bomba-bosch-flex.html">Bomba de combustível Bosch flex</a>
+      <div class="ref">F000TE159A · Combustível</div>
+      <div class="pr"><b>R$ 370,00</b><small>ou 3x R$ 123,33</small></div>
+      <div class="actions">
+        <a class="btn ghost" href="bomba-bosch-flex.html">Ver</a>
+        <button class="btn primary" aria-label="Adicionar Bomba de combustível Bosch flex ao orçamento" onclick="addToCart('bomba-bosch-flex')">Adicionar</button>
+      </div>
+    </div>
+  </article><article class="pcard">
+    
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="bomba-bosch-3bar.html"><svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg></a>
+    <div class="info">
+      <div class="brandline">Bosch</div>
+      <a class="nm" href="bomba-bosch-3bar.html">Bomba de combustível elétrica 3 bar 12V</a>
+      <div class="ref">F000TE181A · Combustível</div>
+      <div class="pr"><b>R$ 529,00</b><small>ou 3x R$ 176,33</small></div>
+      <div class="actions">
+        <a class="btn ghost" href="bomba-bosch-3bar.html">Ver</a>
+        <button class="btn primary" aria-label="Adicionar Bomba de combustível elétrica 3 bar 12V ao orçamento" onclick="addToCart('bomba-bosch-3bar')">Adicionar</button>
+      </div>
+    </div>
+  </article></div>
   </section>
 </div>
 
@@ -310,8 +366,9 @@ footer.site a:hover{color:var(--txt)}
   function menos(){ if(qtd>1){ qtd--; document.getElementById("qtd").textContent = qtd; } }
   function comprar(){ addToCart(p.id, qtd); }
 
-  const rel = window.PRODUTOS.filter(x=>x.cat===p.cat && x.id!==p.id).slice(0,4);
-  renderList("relacionados", rel.length ? rel : window.PRODUTOS.filter(x=>x.id!==p.id).slice(0,4));
+  const rel = window.PRODUTOS.filter(x=>x.cat===p.cat && x.id!==p.id);
+  const resto = window.PRODUTOS.filter(x=>x.id!==p.id && x.cat!==p.cat);
+  renderList("relacionados", rel.concat(resto).slice(0,4));
 </script>
 </body>
 </html>

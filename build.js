@@ -84,6 +84,20 @@ function tituloPeca(p) {
   return base.length + sufixo.length <= 60 ? base + sufixo : base;
 }
 
+/* "Quem viu esta peça também levou" era preenchido só pelo JS (renderList no
+   template), então o HTML publicado saía com a div vazia e as 20 PDPs não
+   tinham nenhum link para outra peça — medido 21/11: 7 links internos por PDP,
+   0 entre peças, e o rastreador via div vazia. O mesmo cardHTML do app.js roda
+   aqui com location de /p/, então a URL sai relativa (id.html), como já era no
+   navegador. */
+const pdpLoc = { pathname: "/p/x.html", href: "/p/x.html" };
+W.location = pdpLoc;
+const CARD_PDP = new Function("window","document","localStorage","location","URLSearchParams",
+  fs.readFileSync(path.join(root, "assets/app.js"), "utf8") + "\nreturn {cardHTML, fmt};")(
+  W,
+  { addEventListener(){}, getElementById(){ return null; }, querySelector(){ return null; }, querySelectorAll(){ return []; }, createElement(){ return {}; }, body: {} },
+  { getItem(){ return null; }, setItem(){} }, pdpLoc, URLSearchParams);
+
 let n = 0;
 for (const p of PRODUTOS) {
   const jsonld = {
@@ -118,6 +132,13 @@ for (const p of PRODUTOS) {
   html = html.replace('<link rel="canonical"', '<link rel="canonical-x"'); // no-op safety
   const pdp = pdpHTML(p, { ICONE: APP.ICONE, fmt: APP.fmt, parcelas: APP.parcelas, cfg: LOJA });
   html = html.replace('<div class="pdp" id="pdp"></div>', `<div class="pdp" id="pdp">${pdp}</div>`);
+  // mesma regra do JS: 4 da mesma categoria primeiro, completando com outras categorias
+  const mesmaCat = PRODUTOS.filter(x => x.cat === p.cat && x.id !== p.id);
+  const outras = PRODUTOS.filter(x => x.id !== p.id && x.cat !== p.cat);
+  const relLista = mesmaCat.concat(outras).slice(0, 4);
+  html = html.replace(
+    '<div class="grid" id="relacionados" style="padding-bottom:20px"></div>',
+    `<div class="grid" id="relacionados" style="padding-bottom:20px">${relLista.map(CARD_PDP.cardHTML).join("")}</div>`);
   html = html.replace('<span id="crumbcat"></span>', `<span id="crumbcat">${p.cat}</span>`);
   html = html.replace('<script src="../assets/pdp.js"></script>',
     '<script src="../assets/pdp.js"></script>');

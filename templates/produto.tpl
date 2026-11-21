@@ -68,8 +68,9 @@
   function menos(){ if(qtd>1){ qtd--; document.getElementById("qtd").textContent = qtd; } }
   function comprar(){ addToCart(p.id, qtd); }
 
-  const rel = window.PRODUTOS.filter(x=>x.cat===p.cat && x.id!==p.id).slice(0,4);
-  renderList("relacionados", rel.length ? rel : window.PRODUTOS.filter(x=>x.id!==p.id).slice(0,4));
+  const rel = window.PRODUTOS.filter(x=>x.cat===p.cat && x.id!==p.id);
+  const resto = window.PRODUTOS.filter(x=>x.id!==p.id && x.cat!==p.cat);
+  renderList("relacionados", rel.concat(resto).slice(0,4));
 </script>
 </body>
 </html>
