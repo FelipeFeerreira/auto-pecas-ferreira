@@ -70,6 +70,18 @@ function drawerHTML(){
   </aside>
   <div class="toast" id="toast"></div>`;
   document.body.appendChild(el);
+  setDrawerHidden(true);
+}
+function setDrawerHidden(hidden){
+  const d = document.getElementById("drawer");
+  if (!d) return;
+  if (hidden){
+    d.setAttribute("inert", "");
+    d.setAttribute("aria-hidden", "true");
+  } else {
+    d.removeAttribute("inert");
+    d.removeAttribute("aria-hidden");
+  }
 }
 function setCartState(open){
   document.querySelectorAll(".cartbtn").forEach(b => {
@@ -102,6 +114,7 @@ function drawerFocusables(){
 function openCart(){
   drawerHTML();
   lastFocus = document.activeElement;
+  setDrawerHidden(false);
   document.getElementById("drawer").classList.add("on");
   document.getElementById("overlay").classList.add("on");
   setCartState(true);
@@ -114,6 +127,7 @@ function closeCart(){
   const d = document.getElementById("drawer");
   const wasOpen = d.classList.contains("on");
   d.classList.remove("on");
+  setDrawerHidden(true);
   document.getElementById("overlay").classList.remove("on");
   setCartState(false);
   setBackgroundHidden(false);
