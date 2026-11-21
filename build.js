@@ -132,10 +132,11 @@ const lastMod = (rel) => {
   } catch { return headDate; }
 };
 
+/* carrinho.html fora do sitemap: é o orçamento do próprio visitante (lista
+   vazia para o rastreador), não conteúdo de catálogo para indexar. */
 const urls = [
   { loc: `${BASE}/`, file: "index.html" },
   { loc: `${BASE}/produtos.html`, file: "produtos.html" },
-  { loc: `${BASE}/carrinho.html`, file: "carrinho.html" },
   { loc: `${BASE}/oficina/`, file: "oficina/index.html" },
   ...PRODUTOS.map(p => ({ loc: `${BASE}/p/${p.id}.html`, file: `p/${p.id}.html` }))
 ];
@@ -256,7 +257,7 @@ const catCrumbs = {
    index/produtos/carrinho não passavam por template: produtos e carrinho saíam
    sem <link rel="canonical"> e sem og:url, então o Google tratava as URLs
    ?cat=/?q= como páginas distintas e o preview social não tinha endereço. */
-function headSeo(arquivo, { url, type, title, desc }) {
+function headSeo(arquivo, { url, type, title, desc, robots }) {
   const p = path.join(root, arquivo);
   let html = fs.readFileSync(p, "utf8");
   const antes = html;
@@ -271,6 +272,7 @@ function headSeo(arquivo, { url, type, title, desc }) {
       `<meta property="og:url" content="${url}">`
     );
   }
+  if (!html.includes('name="robots"') && robots) tags.push(`<meta name="robots" content="${robots}">`);
   if (tags.length) html = html.replace("\n</head>", "\n" + tags.join("\n") + "\n</head>");
   if (!html.includes('property="og:image"')) {
     html = html.replace("\n</head>", "\n" + OG_IMAGE + "\n</head>");
@@ -293,7 +295,8 @@ const seoLog = [
   headSeo("carrinho.html", {
     url: `${BASE}/carrinho.html`, type: "website",
     title: "Meu orçamento — Auto Peças Ferreira",
-    desc: "Revise as peças do seu orçamento e envie para a Auto Peças Ferreira pelo WhatsApp."
+    desc: "Revise as peças do seu orçamento e envie para a Auto Peças Ferreira pelo WhatsApp.",
+    robots: "noindex,follow"
   })
 ].join(",");
 
