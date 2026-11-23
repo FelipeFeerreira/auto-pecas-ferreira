@@ -32,7 +32,7 @@ const ICON = `<link rel="icon" type="image/png" sizes="96x96" href="${BASE}/asse
 const stubDoc = { addEventListener(){}, getElementById(){ return null; }, querySelector(){ return null; }, querySelectorAll(){ return []; } };
 const appSandbox = { window: {}, document: stubDoc, localStorage: { getItem(){ return null; }, setItem(){} }, location: { pathname: "/p/x.html" }, URLSearchParams };
 const appFn = new Function("window","document","localStorage","location","URLSearchParams",
-  fs.readFileSync(path.join(root, "assets/app.js"), "utf8") + "\nreturn {fmt, parcelas, ICONE};");
+  fs.readFileSync(path.join(root, "assets/app.js"), "utf8") + "\nreturn {fmt, parcelas, ICONE, arteDe, iconeCat};");
 const APP = appFn(appSandbox.window, appSandbox.document, appSandbox.localStorage, appSandbox.location, URLSearchParams);
 const pdpSrc = fs.readFileSync(path.join(root, "assets/pdp.js"), "utf8");
 new Function("window", pdpSrc)(appSandbox.window);
@@ -93,7 +93,7 @@ function tituloPeca(p) {
 const pdpLoc = { pathname: "/p/x.html", href: "/p/x.html" };
 W.location = pdpLoc;
 const CARD_PDP = new Function("window","document","localStorage","location","URLSearchParams",
-  fs.readFileSync(path.join(root, "assets/app.js"), "utf8") + "\nreturn {cardHTML, fmt};")(
+  fs.readFileSync(path.join(root, "assets/app.js"), "utf8") + "\nreturn {cardHTML, catcardHTML, fmt};")(
   W,
   { addEventListener(){}, getElementById(){ return null; }, querySelector(){ return null; }, querySelectorAll(){ return []; }, createElement(){ return {}; }, body: {} },
   { getItem(){ return null; }, setItem(){} }, pdpLoc, URLSearchParams);
@@ -130,7 +130,7 @@ for (const p of PRODUTOS) {
   html = html.replace('<meta name="description" content="Ficha técnica, aplicação por veículo, garantia e preço da peça. Entrega no mesmo dia em Salto, Itu e Pardinho.">',
     `<meta name="description" content="${desc}">`);
   html = html.replace('<link rel="canonical"', '<link rel="canonical-x"'); // no-op safety
-  const pdp = pdpHTML(p, { ICONE: APP.ICONE, fmt: APP.fmt, parcelas: APP.parcelas, cfg: LOJA });
+  const pdp = pdpHTML(p, { ICONE: APP.ICONE, arteDe: APP.arteDe, iconeCat: APP.iconeCat, fmt: APP.fmt, parcelas: APP.parcelas, cfg: LOJA });
   html = html.replace('<div class="pdp" id="pdp"></div>', `<div class="pdp" id="pdp">${pdp}</div>`);
   // mesma regra do JS: 4 da mesma categoria primeiro, completando com outras categorias
   const mesmaCat = PRODUTOS.filter(x => x.cat === p.cat && x.id !== p.id);
@@ -208,12 +208,10 @@ const catSandbox = {
 };
 W.location = catSandbox.location;
 const CAT = new Function("window","document","localStorage","location","URLSearchParams",
-  fs.readFileSync(path.join(root, "assets/app.js"), "utf8") + "\nreturn {cardHTML, fmt};")(W, catSandbox.document, catSandbox.localStorage, catSandbox.location, URLSearchParams);
+  fs.readFileSync(path.join(root, "assets/app.js"), "utf8") + "\nreturn {cardHTML, catcardHTML, fmt};")(W, catSandbox.document, catSandbox.localStorage, catSandbox.location, URLSearchParams);
 
 const ICONES = {"Combustível":"⛽","Filtros":"🧽","Freios":"🛑","Motor":"⚙️","Suspensão":"🔩","Elétrica":"🔌","Óleo e fluidos":"🛢️"};
-const catsHTML = [...new Set(PRODUTOS.map(p => p.cat))]
-  .map(c => `<a class="catcard" href="produtos.html?cat=${encodeURIComponent(c)}"><span>${ICONES[c] || "🔧"}</span>${c}</a>`)
-  .join("");
+const catsHTML = [...new Set(PRODUTOS.map(p => p.cat))].map(c => CAT.catcardHTML(c)).join("");
 const destaquesHTML = PRODUTOS.filter(p => p.destaque).slice(0, 8).map(CAT.cardHTML).join("");
 const listaHTML = PRODUTOS.map(CAT.cardHTML).join("");
 const resumoHTML = `${PRODUTOS.length} peças · entrega hoje em Salto, Itu e Pardinho`;
