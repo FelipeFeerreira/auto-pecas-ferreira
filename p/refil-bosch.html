@@ -247,7 +247,15 @@ footer.site a:hover{color:var(--txt)}
 .wabar.on{transform:none}
 @media(max-width:760px){.wabar{display:flex}.wafab{display:none}footer.site{padding-bottom:120px}}
 .wafab:hover{transform:scale(1.06)}
-@media(max-width:520px){.wafab{width:52px;height:52px;right:14px;bottom:14px}}</style>
+@media(max-width:520px){.wafab{width:52px;height:52px;right:14px;bottom:14px}}
+
+/* celular: o veu escurecia a parte de baixo e a foto caia no tampo escuro da bancada.
+   Agora o veu clareia embaixo, a imagem sobe (object-position) e a altura diminui. */
+@media(max-width:760px){
+  .hero{min-height:470px}
+  .hero::after{background:linear-gradient(180deg,rgba(9,11,14,.90) 0%,rgba(9,11,14,.54) 40%,rgba(9,11,14,.18) 72%,rgba(9,11,14,.46) 100%)}
+  .hero-foto img{object-position:50% 22%;filter:brightness(1.12) contrast(1.04)}
+}</style>
 <meta property="og:type" content="product">
 <meta property="og:title" content="Refil de bomba de combustível Bosch F000TE159A-R">
 <meta property="og:description" content="Refil de bomba de combustível Bosch código F000TE159A-R. Gol. R$ 189,00 com entrega no mesmo dia em Salto, Itu e Pardinho.">
