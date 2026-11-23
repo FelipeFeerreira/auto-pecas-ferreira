@@ -215,7 +215,7 @@ function cardHTML(p){
   const tagClass = (p.tag === "Oferta" || p.tag === "Mais vendido") ? "hot" : "";
   return `<article class="pcard">
     ${p.tag ? `<span class="tag ${tagClass}">${p.tag}</span>` : ""}
-    <a class="thumb" tabindex="-1" aria-hidden="true" href="${prodUrl(p.id)}">${ICONE}</a>
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="${prodUrl(p.id)}">${p.foto ? `<img src="${p.foto}" alt="" width="400" height="300" loading="lazy" decoding="async">` : ICONE}</a>
     <div class="info">
       <div class="brandline">${p.marca}</div>
       <a class="nm" href="${prodUrl(p.id)}">${p.nome}</a>
@@ -255,16 +255,21 @@ function wireSearch(){
 }
 
 function whatsappFab(){
-  if (document.getElementById("wafab")) return;
+  if (document.getElementById("wafab") || document.getElementById("wabar")) return;
+  const noCelular = matchMedia("(max-width:760px)").matches;
   const a = document.createElement("a");
-  a.id = "wafab";
-  a.className = "wafab";
+  a.id = noCelular ? "wabar" : "wafab";
+  a.className = noCelular ? "wabar" : "wafab";
   a.target = "_blank";
   a.rel = "noopener";
   a.title = "Falar no WhatsApp";
   a.href = `https://wa.me/${WPP}?text=${encodeURIComponent("Olá! Preciso de uma peça na Auto Peças Ferreira")}`;
-  a.innerHTML = '<svg width="27" height="27" viewBox="0 0 24 24" fill="#06240f"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.6-.7c.1-.2.1-.3 0-.5l-.7-1.6c-.2-.4-.4-.3-.5-.3h-.5c-.2 0-.5.1-.7.4-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.8 2.2.8 2.6.7 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>';
+  if (noCelular) a.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#06240f" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20z"/></svg>Orçamento no WhatsApp';
+  else a.innerHTML = '<svg width="27" height="27" viewBox="0 0 24 24" fill="#06240f"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.6-.7c.1-.2.1-.3 0-.5l-.7-1.6c-.2-.4-.4-.3-.5-.3h-.5c-.2 0-.5.1-.7.4-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.8 2.2.8 2.6.7 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>';
   document.body.appendChild(a);
+  const revelar = () => a.classList.toggle("on", (window.scrollY || document.documentElement.scrollTop) > 320);
+  addEventListener("scroll", revelar, {passive:true});
+  revelar();
 }
 
 document.addEventListener("DOMContentLoaded", () => {

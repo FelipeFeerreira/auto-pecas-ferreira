@@ -7,7 +7,7 @@ window.pdpHTML = function (p, u) {
   const ICONE = u.ICONE, fmt = u.fmt, parcelas = u.parcelas, cfg = u.cfg || {};
   const esgotado = p.estoque <= 0;
   return `
-    <div class="gal">${ICONE}</div>
+    <div class="gal">${p.foto ? `<img src="${p.foto}" alt="${p.nome}" width="640" height="480" loading="eager" decoding="async">` : ICONE}</div>
     <div>
       <div class="brandline">${p.marca}</div>
       <h1>${p.nome}</h1>
