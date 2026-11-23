@@ -61,7 +61,7 @@
   document.getElementById("crumbcat").textContent = p.cat;
 
   const esgotado = p.estoque <= 0;
-  document.getElementById("pdp").innerHTML = pdpHTML(p, {ICONE, fmt, parcelas, cfg});
+  document.getElementById("pdp").innerHTML = pdpHTML(p, {ICONE, arteDe, iconeCat, fmt, parcelas, cfg});
 
   let qtd = 1;
   function mais(){ qtd++; document.getElementById("qtd").textContent = qtd; }

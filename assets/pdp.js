@@ -5,9 +5,10 @@
    ========================================================== */
 window.pdpHTML = function (p, u) {
   const ICONE = u.ICONE, fmt = u.fmt, parcelas = u.parcelas, cfg = u.cfg || {};
+  const arteDe = u.arteDe, iconeCat = u.iconeCat;
   const esgotado = p.estoque <= 0;
   return `
-    <div class="gal">${p.foto ? `<img src="${p.foto}" alt="${p.nome}" width="640" height="480" loading="eager" decoding="async">` : ICONE}</div>
+    <div class="gal" style="--t:${arteDe(p.cat).t}">${p.foto ? `<img src="${p.foto}" alt="${p.nome}" width="640" height="480" loading="eager" decoding="async">` : iconeCat(p.cat)}</div>
     <div>
       <div class="brandline">${p.marca}</div>
       <h1>${p.nome}</h1>

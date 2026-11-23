@@ -43,19 +43,27 @@ nav.links a[aria-current="page"]{color:var(--txt);font-weight:700}
 @media(max-width:720px){.searchbox{display:none}.bar{height:60px}}
 
 /* hero */
-.hero{padding:48px 0 44px;min-height:min(76vh,720px);display:flex;align-items:center;border-bottom:1px solid var(--line);background:
+.hero{padding:40px 0;min-height:min(86vh,760px);display:flex;align-items:center;border-bottom:1px solid var(--line);background:
   radial-gradient(900px 340px at 12% -30%, rgba(224,58,44,.10), transparent 62%)}
 /* Hero em duas colunas: texto a esquerda, arte da loja a direita.
    Para usar a FOTO real da loja basta trocar o src do <img class="hero-img">
    em index.html (JPG/WebP, 1920x1200, horizontal, ate 300 KB). */
 .hero>.wrap{width:100%}
-.hero .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:48px;align-items:center}
+.hero .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:40px;align-items:center}
 .hero-foto{margin:0;border-radius:16px;overflow:hidden;border:1px solid #2a323d;background:var(--panel);box-shadow:0 26px 60px rgba(0,0,0,.5)}
 .hero-foto img{display:block;width:100%;height:100%;aspect-ratio:4/5;object-fit:cover}
-@media(min-width:981px){.hero-foto{height:min(60vh,560px)}}
-@media(max-width:980px){.hero .hero-grid{grid-template-columns:1fr;gap:8px}.hero-foto{max-width:560px;margin:26px auto 0}.hero-foto img{aspect-ratio:16/9}}
+@media(min-width:981px){.hero-foto{height:min(66vh,600px)}}
+@media(max-width:980px){.hero .hero-grid{grid-template-columns:1fr;gap:8px}.hero-foto{max-width:560px;margin:26px auto 0;width:100%}.hero-foto img{aspect-ratio:16/9}}
+@media(max-width:760px){
+  .hero{position:relative;display:block;padding:0;min-height:520px;overflow:hidden}
+  .hero .hero-grid{display:block;padding:30px 16px 28px}
+  .hero-txt{position:relative;z-index:2}
+  .hero-foto{position:absolute;inset:0;z-index:0;margin:0;max-width:none;width:auto;border:0;border-radius:0;box-shadow:none}
+  .hero-foto img{width:100%;height:100%;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:50% 30%;filter:brightness(1.35) saturate(1.1)}
+  .hero::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(9,11,14,.94) 0%,rgba(9,11,14,.74) 38%,rgba(9,11,14,.52) 68%,rgba(9,11,14,.88) 100%)}
+}
 .hero .tagline{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);padding:6px 11px;border-radius:999px;margin-bottom:16px}
-.hero h1{margin:0 0 16px;font-size:clamp(32px,5.2vw,58px);line-height:1.04;letter-spacing:-1px}
+.hero h1{margin:0 0 18px;font-size:clamp(36px,4.9vw,62px);line-height:1.02;letter-spacing:-1.2px}
 .hero h1 em{font-style:normal;color:#fff}
 .hero p.sub{margin:0 0 26px;color:var(--muted);font-size:16.5px;line-height:1.55;max-width:560px}
 .hero .cta{display:flex;gap:10px;flex-wrap:wrap}
@@ -63,6 +71,26 @@ nav.links a[aria-current="page"]{color:var(--txt);font-weight:700}
 .trust div{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:12px 14px;font-size:13.5px;color:var(--muted)}
 .trust b{display:block;color:var(--txt);font-size:14px;margin-bottom:3px}
 @media(max-width:760px){.trust{grid-template-columns:repeat(2,1fr)}}
+
+/* faixa de busca: padrao de loja grande, a busca fica abaixo do hero */
+.busca{border-bottom:1px solid var(--line);background:var(--panel);padding:20px 0 16px}
+.busca-box{display:flex;gap:10px;max-width:840px;margin:0 auto}
+.busca-box input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:0 16px;min-height:56px;font-size:16px;color:var(--txt);outline:none}
+.busca-box input:focus{border-color:#46505f}
+.busca-box .btn{min-height:56px;padding:0 24px;font-size:15px;flex:none}
+.busca-chips{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:6px;font-size:13px;color:var(--muted)}
+.busca-chips a{color:var(--txt);display:inline-flex;align-items:center;min-height:44px;border-bottom:1px solid #2b3340}
+@media(max-width:560px){.busca-box{flex-direction:column}.busca-box .btn{width:100%}.busca-chips{justify-content:flex-start;gap:12px}}
+
+/* faixa de confianca em 4 colunas, logo depois do hero */
+.faixa-trust{border-bottom:1px solid var(--line);padding:16px 0}
+.faixa-trust .trust{margin-top:0}
+.faixa-trust .trust div{padding:12px 14px}
+
+/* abas do catalogo */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 18px}
+.tabs .chip{font-size:14px}
+.vazio-filtro{padding:28px 0;color:var(--muted);font-size:15px}
 
 /* sections */
 section.blk{padding:34px 0}
@@ -75,10 +103,11 @@ section.blk{padding:34px 0}
 .cats{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 0 8px;scrollbar-width:none}
 .cats::-webkit-scrollbar{display:none}
 @media(min-width:1000px){.cats{overflow:visible}}
-.catcard{flex:0 0 148px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 12px;text-align:center;font-size:14px;font-weight:600;min-height:98px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.catcard{flex:0 0 136px;aspect-ratio:1;scroll-snap-align:start;background:radial-gradient(120% 100% at 30% 12%, var(--t, rgba(224,58,44,.2)), transparent 72%),var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 10px;text-align:center;font-size:13.5px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.catcard .cat-ico svg{width:36px;height:36px;opacity:.95}
+.catcard .cat-nome{line-height:1.25}
 @media(min-width:1000px){.catcard{flex:1 1 0;min-width:0}}
 .catcard:hover{border-color:#3a4450}
-.catcard span{display:block;font-size:22px;margin-bottom:7px}
 
 /* produto card */
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
@@ -88,15 +117,18 @@ section.blk{padding:34px 0}
 @media(max-width:760px){.grid.g3{grid-template-columns:1fr}}
 .pcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;position:relative}
 .pcard:hover{border-color:#333c49}
-.pcard .thumb{aspect-ratio:4/3;background:linear-gradient(160deg,#1a2029,#111418);display:grid;place-items:center;border-bottom:1px solid var(--line)}
+.pcard .thumb{position:relative;aspect-ratio:4/3;min-height:200px;background:radial-gradient(115% 100% at 25% 12%, var(--t, rgba(224,58,44,.2)), transparent 68%),linear-gradient(160deg,#1a2029,#0e1116);display:grid;place-items:center;border-bottom:1px solid var(--line)}
+.pcard .thumb-ico svg{width:66px;height:66px;opacity:.9}
+.pcard .thumb-cat{position:absolute;left:0;right:0;bottom:11px;text-align:center;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#93a0b2}
 .pcard .thumb:has(img){background:#f6f7f9}
+.pcard .thumb:has(img) .thumb-cat{display:none}
 .pcard .thumb img,.pdp .gal img{display:block;width:100%;height:100%;object-fit:contain}
 .pcard .thumb svg{width:60%;height:60%;opacity:.8}
-.pcard .tag{position:absolute;top:10px;left:10px;font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:5px 8px;border-radius:6px;background:rgba(11,13,16,.82);color:var(--txt);border:1px solid #39414d}
+.pcard .tag{position:absolute;top:12px;left:12px;z-index:2;font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:5px 8px;border-radius:6px;background:rgba(11,13,16,.82);color:var(--txt);border:1px solid #39414d}
 .pcard .tag.hot{background:rgba(11,13,16,.92);color:#fff;border-color:#4b5563}
 .pcard .info{padding:13px;display:flex;flex-direction:column;gap:6px;flex:1}
 .pcard .brandline{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
-.pcard .nm{font-size:16px;font-weight:600;line-height:1.35;min-height:48px}
+.pcard .nm{font-size:16px;font-weight:600;line-height:1.35;height:44px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pcard .ref{font-size:13px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,monospace}
 .pcard .pr{margin-top:auto;padding-top:8px;display:flex;align-items:baseline;gap:8px}
 .pcard .pr b{font-size:19px;letter-spacing:-.3px}
@@ -120,8 +152,8 @@ select{background:var(--panel);border:1px solid var(--line);color:var(--txt);bor
 .pdp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;padding:28px 0}
 .pdp>*{min-width:0}
 @media(max-width:860px){.pdp{grid-template-columns:1fr}}
-.pdp .gal{background:var(--panel);border:1px solid var(--line);border-radius:16px;aspect-ratio:4/3;max-height:430px;display:grid;place-items:center}
-.pdp .gal svg{width:58%;height:58%;opacity:.85}
+.pdp .gal{background:radial-gradient(115% 100% at 28% 12%, var(--t, rgba(224,58,44,.2)), transparent 70%),var(--panel);border:1px solid var(--line);border-radius:16px;aspect-ratio:4/3;max-height:430px;display:grid;place-items:center}
+.pdp .gal svg{width:120px;height:120px;opacity:.9}
 .crumb{font-size:13px;color:var(--muted);padding-top:18px}
 .crumb a:hover{color:var(--txt)}
 .pdp h1{margin:8px 0 6px;font-size:clamp(24px,3vw,30px);line-height:1.2;letter-spacing:-.4px}
@@ -201,7 +233,7 @@ footer.site a:hover{color:var(--txt)}
   .pcard .actions .btn{width:100%;padding:10px 6px}
   .pcard .pr b{font-size:19px}
   .hero h1{font-size:34px;letter-spacing:-.6px}
-  .hero{padding:28px 0 26px;min-height:0}
+  .hero{padding:0;min-height:520px}
   .hero-foto img{aspect-ratio:16/9;max-height:150px}
   .trust{margin-top:22px;gap:8px}
   .trust div{padding:10px 12px;font-size:13px}
@@ -260,8 +292,7 @@ footer.site a:hover{color:var(--txt)}
 <div class="wrap">
   <div class="crumb"><a href="../index.html">Início</a> › <a href="../produtos.html">Catálogo</a> › <span id="crumbcat">Freios</span></div>
   <div class="pdp" id="pdp">
-    <div class="gal"><svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg></div>
+    <div class="gal" style="--t:rgba(245,166,35,.26)"><svg viewBox="0 0 24 24" fill="none" stroke="#c2ccda" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg></div>
     <div>
       <div class="brandline">Nakata</div>
       <h1>Lona de freio traseira (jogo)</h1>
@@ -300,10 +331,9 @@ footer.site a:hover{color:var(--txt)}
     </div></div>
   <section class="blk" style="padding-top:0">
     <div class="head"><h2>Quem viu esta peça também levou</h2></div>
-    <div class="grid" id="relacionados" style="padding-bottom:20px"><article class="pcard">
+    <div class="grid" id="relacionados" style="padding-bottom:20px"><article class="pcard" data-tag="Mais vendido">
     <span class="tag hot">Mais vendido</span>
-    <a class="thumb" tabindex="-1" aria-hidden="true" href="pastilha-bosch.html"><svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg></a>
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="pastilha-bosch.html" style="--t:rgba(245,166,35,.26)"><span class="thumb-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#c2ccda" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg></span><span class="thumb-cat">Freios</span></a>
     <div class="info">
       <div class="brandline">Bosch</div>
       <a class="nm" href="pastilha-bosch.html">Pastilha de freio dianteira Bosch</a>
@@ -314,10 +344,9 @@ footer.site a:hover{color:var(--txt)}
         <button class="btn primary" aria-label="Adicionar Pastilha de freio dianteira Bosch ao orçamento" onclick="addToCart('pastilha-bosch')">Adicionar</button>
       </div>
     </div>
-  </article><article class="pcard">
+  </article><article class="pcard" data-tag="">
     
-    <a class="thumb" tabindex="-1" aria-hidden="true" href="disco-freio.html"><svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg></a>
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="disco-freio.html" style="--t:rgba(245,166,35,.26)"><span class="thumb-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#c2ccda" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg></span><span class="thumb-cat">Freios</span></a>
     <div class="info">
       <div class="brandline">Fremax</div>
       <a class="nm" href="disco-freio.html">Disco de freio ventilado dianteiro</a>
@@ -328,10 +357,9 @@ footer.site a:hover{color:var(--txt)}
         <button class="btn primary" aria-label="Adicionar Disco de freio ventilado dianteiro ao orçamento" onclick="addToCart('disco-freio')">Adicionar</button>
       </div>
     </div>
-  </article><article class="pcard">
+  </article><article class="pcard" data-tag="Oferta">
     <span class="tag hot">Oferta</span>
-    <a class="thumb" tabindex="-1" aria-hidden="true" href="bomba-bosch-flex.html"><svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg></a>
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="bomba-bosch-flex.html" style="--t:rgba(224,58,44,.28)"><span class="thumb-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#c2ccda" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v16"/><path d="M5 21h12"/><path d="M15 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V9l-2-2"/></svg></span><span class="thumb-cat">Combustível</span></a>
     <div class="info">
       <div class="brandline">Bosch</div>
       <a class="nm" href="bomba-bosch-flex.html">Bomba de combustível Bosch flex</a>
@@ -342,10 +370,9 @@ footer.site a:hover{color:var(--txt)}
         <button class="btn primary" aria-label="Adicionar Bomba de combustível Bosch flex ao orçamento" onclick="addToCart('bomba-bosch-flex')">Adicionar</button>
       </div>
     </div>
-  </article><article class="pcard">
+  </article><article class="pcard" data-tag="">
     
-    <a class="thumb" tabindex="-1" aria-hidden="true" href="bomba-bosch-3bar.html"><svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
-<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg></a>
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="bomba-bosch-3bar.html" style="--t:rgba(224,58,44,.28)"><span class="thumb-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#c2ccda" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v16"/><path d="M5 21h12"/><path d="M15 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V9l-2-2"/></svg></span><span class="thumb-cat">Combustível</span></a>
     <div class="info">
       <div class="brandline">Bosch</div>
       <a class="nm" href="bomba-bosch-3bar.html">Bomba de combustível elétrica 3 bar 12V</a>
@@ -381,7 +408,7 @@ footer.site a:hover{color:var(--txt)}
   document.getElementById("crumbcat").textContent = p.cat;
 
   const esgotado = p.estoque <= 0;
-  document.getElementById("pdp").innerHTML = pdpHTML(p, {ICONE, fmt, parcelas, cfg});
+  document.getElementById("pdp").innerHTML = pdpHTML(p, {ICONE, arteDe, iconeCat, fmt, parcelas, cfg});
 
   let qtd = 1;
   function mais(){ qtd++; document.getElementById("qtd").textContent = qtd; }
