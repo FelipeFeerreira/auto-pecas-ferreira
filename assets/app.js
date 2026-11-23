@@ -15,6 +15,26 @@ const prodUrl = id => (location.pathname.indexOf("/p/") >= 0 ? "" : "p/") + id +
 const ICONE = `<svg viewBox="0 0 24 24" fill="none" stroke="#5b6b82" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
 <path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/><circle cx="16.5" cy="7.5" r="1.2" fill="#5b6b82"/></svg>`;
 
+/* ---------- ícone e tom por categoria (área de imagem do card) ----------
+   Sem foto ainda: cada categoria tem ícone próprio e um tom da identidade,
+   em vez do mesmo ícone repetido em todos os cards. */
+const CAT_ARTE = {
+  "Combustível":    { t:"rgba(224,58,44,.28)",   p:'<path d="M7 21V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v16"/><path d="M5 21h12"/><path d="M15 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V9l-2-2"/>' },
+  "Filtros":        { t:"rgba(42,106,212,.30)",  p:'<path d="M4 5h16l-6 7v6l-4 2v-8z"/>' },
+  "Freios":         { t:"rgba(245,166,35,.26)",  p:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/>' },
+  "Motor":          { t:"rgba(150,163,181,.22)", p:'<rect x="5" y="9" width="11" height="8" rx="1"/><path d="M9 9V6h4v3M16 11h3v4h-3M8 17v2M13 17v2"/>' },
+  "Suspensão":      { t:"rgba(74,168,160,.26)",  p:'<path d="M12 3v3"/><path d="M8 6h8l-8 3h8l-8 3h8l-8 3h8"/><path d="M12 18v3"/>' },
+  "Elétrica":       { t:"rgba(245,197,66,.24)",  p:'<path d="M13 2 4 14h6l-1 8 9-12h-6z"/>' },
+  "Óleo e fluidos": { t:"rgba(180,83,9,.28)",    p:'<path d="M8 21h8a2 2 0 0 0 2-2v-7l-3-3H9L6 12v7a2 2 0 0 0 2 2z"/><path d="M14 9V6h3"/>' }
+};
+const arteDe = cat => CAT_ARTE[cat] || { t:"rgba(224,58,44,.20)", p:'<path d="M14.7 6.3a5 5 0 0 0 6.6 6.6l-8.6 8.6a2 2 0 0 1-2.8 0l-4.4-4.4a2 2 0 0 1 0-2.8l8.6-8.6z"/>' };
+const iconeCat = cat => `<svg viewBox="0 0 24 24" fill="none" stroke="#c2ccda" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">${arteDe(cat).p}</svg>`;
+
+/* card de categoria: quadrado com o ícone grande, para a faixa de categorias */
+function catcardHTML(cat){
+  return `<a class="catcard" href="produtos.html?cat=${encodeURIComponent(cat)}" style="--t:${arteDe(cat).t}"><span class="cat-ico">${iconeCat(cat)}</span><span class="cat-nome">${cat}</span></a>`;
+}
+
 /* ---------- carrinho ---------- */
 const CART_KEY = "apf_cart";
 let cart = [];
@@ -183,6 +203,26 @@ function setEnviarState(a, hrefAtivo){
   }
 }
 
+function wireTabs(){
+  const tabs = document.getElementById("tabs");
+  const grid = document.getElementById("destaques");
+  if (!tabs || !grid) return;
+  tabs.addEventListener("click", (ev) => {
+    const b = ev.target.closest("[data-filtro]");
+    if (!b) return;
+    ev.preventDefault();
+    tabs.querySelectorAll("[data-filtro]").forEach(x => x.classList.toggle("on", x === b));
+    const f = b.dataset.filtro;
+    grid.querySelectorAll(".pcard").forEach(c => {
+      c.hidden = f !== "tudo" && (c.dataset.tag || "") !== f;
+    });
+    const vazio = grid.querySelector(".vazio-filtro");
+    const visiveis = [...grid.querySelectorAll(".pcard")].filter(c => !c.hidden).length;
+    if (!visiveis && !vazio) grid.insertAdjacentHTML("beforeend", '<p class="vazio-filtro">Nenhuma peça nesta seleção agora.</p>');
+    if (visiveis && vazio) vazio.remove();
+  });
+}
+
 function paintCart(){
   drawerHTML();
   const badge = document.getElementById("badge");
@@ -213,9 +253,9 @@ function paintCart(){
 /* ---------- cards ---------- */
 function cardHTML(p){
   const tagClass = (p.tag === "Oferta" || p.tag === "Mais vendido") ? "hot" : "";
-  return `<article class="pcard">
+  return `<article class="pcard" data-tag="${p.tag || ""}">
     ${p.tag ? `<span class="tag ${tagClass}">${p.tag}</span>` : ""}
-    <a class="thumb" tabindex="-1" aria-hidden="true" href="${prodUrl(p.id)}">${ICONE}</a>
+    <a class="thumb" tabindex="-1" aria-hidden="true" href="${prodUrl(p.id)}" style="--t:${arteDe(p.cat).t}">${p.foto ? `<img src="${p.foto}" alt="" width="400" height="300" loading="lazy" decoding="async">` : `<span class="thumb-ico">${iconeCat(p.cat)}</span><span class="thumb-cat">${p.cat}</span>`}</a>
     <div class="info">
       <div class="brandline">${p.marca}</div>
       <a class="nm" href="${prodUrl(p.id)}">${p.nome}</a>
@@ -255,16 +295,21 @@ function wireSearch(){
 }
 
 function whatsappFab(){
-  if (document.getElementById("wafab")) return;
+  if (document.getElementById("wafab") || document.getElementById("wabar")) return;
+  const noCelular = matchMedia("(max-width:760px)").matches;
   const a = document.createElement("a");
-  a.id = "wafab";
-  a.className = "wafab";
+  a.id = noCelular ? "wabar" : "wafab";
+  a.className = noCelular ? "wabar" : "wafab";
   a.target = "_blank";
   a.rel = "noopener";
   a.title = "Falar no WhatsApp";
   a.href = `https://wa.me/${WPP}?text=${encodeURIComponent("Olá! Preciso de uma peça na Auto Peças Ferreira")}`;
-  a.innerHTML = '<svg width="27" height="27" viewBox="0 0 24 24" fill="#06240f"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.6-.7c.1-.2.1-.3 0-.5l-.7-1.6c-.2-.4-.4-.3-.5-.3h-.5c-.2 0-.5.1-.7.4-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.8 2.2.8 2.6.7 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>';
+  if (noCelular) a.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="#06240f" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20z"/></svg>Orçamento no WhatsApp';
+  else a.innerHTML = '<svg width="27" height="27" viewBox="0 0 24 24" fill="#06240f"><path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.6-5.9c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1l-.7.9c-.1.1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.1-.2 0-.4.1-.5l.6-.7c.1-.2.1-.3 0-.5l-.7-1.6c-.2-.4-.4-.3-.5-.3h-.5c-.2 0-.5.1-.7.4-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.8 2.2.8 2.6.7 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.2-.2-.4-.3z"/></svg>';
   document.body.appendChild(a);
+  const revelar = () => a.classList.toggle("on", (window.scrollY || document.documentElement.scrollTop) > 320);
+  addEventListener("scroll", revelar, {passive:true});
+  revelar();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -272,6 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setCartState(false);
   paintCart();
   wireSearch();
+  wireTabs();
   whatsappFab();
   const badge = document.getElementById("badge");
   if (badge) badge.onclick = openCart;

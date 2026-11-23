@@ -2,6 +2,14 @@
    Auto Peças Ferreira — dados do catálogo
    Trocar preço/estoque aqui. NUNCA colocar custo neste arquivo:
    ele é público (vai para o site).
+
+   FOTO DA PEÇA (campo opcional `foto`):
+   - valor: caminho relativo a partir da raiz do site, ex. "assets/pecas/F000TE159A.jpg"
+   - formato: JPG ou WebP, fundo branco liso, peça centralizada, sem texto
+   - proporção: 4:3 deitada (ex. 1600x1200 ou 800x600)
+   - tamanho: até 150 KB por foto
+   - nome do arquivo: a referência do produto (F000TE159A.jpg) ou o id (bomba-bosch-flex.jpg)
+   - sem o campo (ou vazio), o card mostra o ícone de categoria atual
    ========================================================== */
 window.WHATSAPP = "5514981473778";
 window.LOJA = {
@@ -15,7 +23,7 @@ window.LOJA = {
 window.PRODUTOS = [
   {id:"bomba-bosch-flex", nome:"Bomba de combustível Bosch flex", marca:"Bosch", ref:"F000TE159A",
    cat:"Combustível", aplicacao:["Gol G5/G6 1.0 2008–2013","Fox 1.0/1.6 2004–2014","Voyage 1.0 2009–2014","Saveiro 1.6 2010–2014"],
-   preco:370, de:0, estoque:2, destaque:true, tag:"Oferta",
+   preco:370, de:0, estoque:2, destaque:true, tag:"Oferta", foto:"",
    desc:"Bomba elétrica interna original Bosch para sistema flex. Substitui a peça original sem adaptação. Acompanha anel de vedação."},
 
   {id:"bomba-bosch-3bar", nome:"Bomba de combustível elétrica 3 bar 12V", marca:"Bosch", ref:"F000TE181A",
